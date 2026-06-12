@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc" viewBox="0 0 1200 640">
+  <title id="title">Sub-agent blog pipeline diagram</title>
+  <desc id="desc">A workflow diagram with Main coordinating Intake, Research, Write, Image, Assemble, Judge, and Publish stages.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#2f6f67" />
+    </marker>
+    <filter id="soft-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#1d2925" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <rect width="1200" height="640" rx="0" fill="#f8f5f1" />
+  <rect x="46" y="42" width="1108" height="556" rx="22" fill="#fffdf9" stroke="#ded6ce" />
+
+  <text x="86" y="104" fill="#1f2d29" font-family="Inter, Arial, sans-serif" font-size="48" font-weight="700">
+    Blog pipeline with sub-agents
+  </text>
+  <text x="86" y="150" fill="#68736f" font-family="Inter, Arial, sans-serif" font-size="26">
+    Main keeps the boundary. Each stage leaves a handoff.
+  </text>
+
+  <g filter="url(#soft-shadow)">
+    <rect x="454" y="198" width="292" height="116" rx="18" fill="#193a35" />
+    <text x="600" y="250" text-anchor="middle" fill="#f8f5f1" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="700">Main</text>
+    <text x="600" y="286" text-anchor="middle" fill="#c9ded8" font-family="Inter, Arial, sans-serif" font-size="24">scope, voice, verify</text>
+  </g>
+
+  <g fill="none" stroke="#2f6f67" stroke-width="3" marker-end="url(#arrow)">
+    <path d="M598 332 L598 381" />
+    <path d="M198 450 L296 450" />
+    <path d="M378 450 L476 450" />
+    <path d="M558 450 L656 450" />
+    <path d="M738 450 L836 450" />
+    <path d="M918 450 L1016 450" />
+  </g>
+
+  <g fill="#fffdf9" stroke="#d7ccc2" stroke-width="2">
+    <rect x="76" y="394" width="122" height="112" rx="16" />
+    <rect x="296" y="394" width="122" height="112" rx="16" />
+    <rect x="476" y="394" width="122" height="112" rx="16" />
+    <rect x="656" y="394" width="122" height="112" rx="16" />
+    <rect x="836" y="394" width="122" height="112" rx="16" />
+    <rect x="1016" y="394" width="122" height="112" rx="16" />
+  </g>
+
+  <g fill="#1f2d29" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" text-anchor="middle">
+    <text x="137" y="443">Intake</text>
+    <text x="357" y="443">Research</text>
+    <text x="537" y="443">Write</text>
+    <text x="717" y="443">Image</text>
+    <text x="897" y="443">Assemble</text>
+    <text x="1077" y="443">Publish</text>
+  </g>
+
+  <g fill="#6c7672" font-family="Inter, Arial, sans-serif" font-size="17" text-anchor="middle">
+    <text x="137" y="471">promise</text>
+    <text x="137" y="489">risk line</text>
+    <text x="357" y="471">facts</text>
+    <text x="357" y="489">sources</text>
+    <text x="537" y="471">draft</text>
+    <text x="537" y="489">handoff</text>
+    <text x="717" y="471">visual</text>
+    <text x="717" y="489">alt text</text>
+    <text x="897" y="471">schema</text>
+    <text x="897" y="489">routes</text>
+    <text x="1077" y="471">check</text>
+    <text x="1077" y="489">approval</text>
+  </g>
+
+  <g fill="none" stroke="#a55f44" stroke-width="3" stroke-dasharray="8 9" marker-end="url(#arrow)">
+    <path d="M1005 378 C936 326 845 308 745 283" />
+  </g>
+  <text x="942" y="322" fill="#a55f44" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">Judge feedback</text>
+
+  <g>
+    <rect x="84" y="548" width="1032" height="1" fill="#e8e0d8" />
+    <text x="86" y="578" fill="#68736f" font-family="Inter, Arial, sans-serif" font-size="22">
+      Use the full chain for high-risk writing. Keep tiny edits in Main.
+    </text>
+  </g>
+</svg>

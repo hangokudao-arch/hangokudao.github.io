@@ -1,0 +1,483 @@
+<!DOCTYPE html><html lang="ko"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Andrej Karpathy의 Software 2.0, Verifiability, MenuGen 회고를 렌즈로 삼아 AGENTS.md와 CLAUDE.md를 프롬프트 저장소가 아니라 작업 컨텍스트로 보는 기준을 정리한다."><link rel="canonical" href="https://hangokudao.github.io/writing/2/karpathy-context-engineering-rules/"><link rel="alternate" type="application/rss+xml" title="hangokudao RSS" href="https://hangokudao.github.io/rss.xml"><meta property="og:site_name" content="hangokudao"><meta property="og:title" content="Karpathy가 말한 컨텍스트 엔지니어링: 규칙 파일 다시 보기 | hangokudao"><meta property="og:description" content="Andrej Karpathy의 Software 2.0, Verifiability, MenuGen 회고를 렌즈로 삼아 AGENTS.md와 CLAUDE.md를 프롬프트 저장소가 아니라 작업 컨텍스트로 보는 기준을 정리한다."><meta property="og:type" content="article"><meta property="og:url" content="https://hangokudao.github.io/writing/2/karpathy-context-engineering-rules/"><meta property="og:image" content="https://hangokudao.github.io/assets/blog/karpathy-context-engineering-rules/hero-context-stack.png"><meta property="og:image:alt" content="짧은 요청 위로 repo 규칙, 도메인 문서, 검증 지점이 층처럼 쌓인 구조"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Karpathy가 말한 컨텍스트 엔지니어링: 규칙 파일 다시 보기 | hangokudao"><meta name="twitter:description" content="Andrej Karpathy의 Software 2.0, Verifiability, MenuGen 회고를 렌즈로 삼아 AGENTS.md와 CLAUDE.md를 프롬프트 저장소가 아니라 작업 컨텍스트로 보는 기준을 정리한다."><meta name="twitter:image" content="https://hangokudao.github.io/assets/blog/karpathy-context-engineering-rules/hero-context-stack.png"><meta name="twitter:image:alt" content="짧은 요청 위로 repo 규칙, 도메인 문서, 검증 지점이 층처럼 쌓인 구조"><meta property="article:published_time" content="2026-06-04T00:00:00.000Z"><meta property="article:tag" content="codex"><meta property="article:tag" content="claude-code"><meta property="article:tag" content="agents-md"><meta property="article:tag" content="context-engineering"><meta property="article:tag" content="karpathy"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Karpathy가 말한 컨텍스트 엔지니어링: 규칙 파일 다시 보기","description":"Andrej Karpathy의 Software 2.0, Verifiability, MenuGen 회고를 렌즈로 삼아 AGENTS.md와 CLAUDE.md를 프롬프트 저장소가 아니라 작업 컨텍스트로 보는 기준을 정리한다.","datePublished":"2026-06-04T00:00:00.000Z","dateModified":"2026-06-08T00:00:00.000Z","author":{"@type":"Person","name":"hangokudao","url":"https://github.com/hangokudao"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://hangokudao.github.io/writing/2/karpathy-context-engineering-rules/"},"url":"https://hangokudao.github.io/writing/2/karpathy-context-engineering-rules/","keywords":["codex","claude-code","agents-md","context-engineering","karpathy"],"image":["https://hangokudao.github.io/assets/blog/karpathy-context-engineering-rules/hero-context-stack.png"]}</script><link rel="icon" href="/favicon.svg" type="image/svg+xml"><title>Karpathy가 말한 컨텍스트 엔지니어링: 규칙 파일 다시 보기 | hangokudao</title><link rel="stylesheet" href="/_astro/_urlSlug_.CbYNetVa.css">
+<link rel="stylesheet" href="/_astro/BaseLayout.F8fUCOQD.css"></head> <body> <div class="site-shell"> <a class="skip-link" href="#content">본문으로 건너뛰기</a> <header class="site-header" data-astro-cid-ctg3m53h> <div class="container header-inner" data-astro-cid-ctg3m53h> <a class="brand" href="/" aria-label="hangokudao 홈" data-astro-cid-ctg3m53h> <strong data-astro-cid-ctg3m53h>hangokudao</strong> <span data-astro-cid-ctg3m53h>AI 에이전트와 함께 성장하기</span> </a> <nav class="nav-links" aria-label="주요 내비게이션" data-astro-cid-ctg3m53h> <a class="nav-link" href="/" data-astro-cid-ctg3m53h> 홈 </a><a class="nav-link active" href="/writing/" data-astro-cid-ctg3m53h> 글 </a><a class="nav-link" href="/projects/" data-astro-cid-ctg3m53h> 프로젝트 </a><a class="nav-link" href="/about/" data-astro-cid-ctg3m53h> 소개 </a> <a class="nav-link github" href="https://github.com/hangokudao" rel="noreferrer" target="_blank" data-astro-cid-ctg3m53h>
+GitHub
+</a> </nav> </div> </header> <main id="content" class="site-main">  <article class="post-shell narrow" data-astro-cid-gjtny2mx> <header class="post-header" data-astro-cid-gjtny2mx> <p class="eyebrow" data-astro-cid-gjtny2mx>에이전트 워크플로</p> <h1 data-astro-cid-gjtny2mx>Karpathy가 말한 컨텍스트 엔지니어링: 규칙 파일 다시 보기</h1> <p class="description" data-astro-cid-gjtny2mx>Andrej Karpathy의 Software 2.0, Verifiability, MenuGen 회고를 렌즈로 삼아 AGENTS.md와 CLAUDE.md를 프롬프트 저장소가 아니라 작업 컨텍스트로 보는 기준을 정리한다.</p> <div class="post-meta" data-astro-cid-gjtny2mx> <time datetime="2026-06-04T00:00:00.000Z" data-astro-cid-gjtny2mx>2026년 6월 4일</time> <span data-astro-cid-gjtny2mx>7분 읽기</span> <span data-astro-cid-gjtny2mx>AI Agent First Setup · 2편</span> </div> <ul class="tag-list" aria-label="Tags" data-astro-cid-gjtny2mx> <li data-astro-cid-gjtny2mx> <a href="/writing/tag/codex/" data-astro-cid-gjtny2mx>#codex</a> </li><li data-astro-cid-gjtny2mx> <a href="/writing/tag/claude-code/" data-astro-cid-gjtny2mx>#claude-code</a> </li><li data-astro-cid-gjtny2mx> <a href="/writing/tag/agents-md/" data-astro-cid-gjtny2mx>#agents-md</a> </li><li data-astro-cid-gjtny2mx> <a href="/writing/tag/context-engineering/" data-astro-cid-gjtny2mx>#context-engineering</a> </li><li data-astro-cid-gjtny2mx> <a href="/writing/tag/karpathy/" data-astro-cid-gjtny2mx>#karpathy</a> </li> </ul> </header> <aside class="post-summary" aria-labelledby="post-summary-title" data-astro-cid-gjtny2mx> <h2 id="post-summary-title" data-astro-cid-gjtny2mx>이 글에서 다루는 것</h2> <ul data-astro-cid-gjtny2mx> <li data-astro-cid-gjtny2mx>반복해서 붙여넣는 지시는 프롬프트가 아니라 에이전트가 다시 볼 컨텍스트로 옮겨야 한다.</li><li data-astro-cid-gjtny2mx>Karpathy의 Software 2.0, Verifiability, MenuGen 회고를 AI agent 작업의 검증 기준으로 읽는다.</li><li data-astro-cid-gjtny2mx>AGENTS.md와 CLAUDE.md에는 그럴듯한 원칙보다 멈춤 조건, 검증 조건, 반복 작업 기준을 남기는 편이 낫다.</li> </ul> </aside> <div class="post-content" data-astro-cid-gjtny2mx> <p><a href="/writing/1/repeated-prompts-belong-in-rules/">앞 글</a>에서는 같은 문장을 세 번째 붙여넣는 순간을 규칙 파일 신호로 봤다.</p>
+<p>새 글은 <code>draft: true</code>로 시작한다. <code>dist/</code>는 건드리지 않는다. push나 deploy는 확인 전 하지 않는다. 완료 전 가능한 검증 명령을 실행한다.</p>
+<p>이런 말은 매번 채팅창에 붙일 수 있다. 하지만 세션이 바뀌거나 문장 하나가 빠지면 기준도 같이 빠진다. 그래서 반복 지시는 프롬프트보다 repo 안의 컨텍스트로 옮기는 편이 낫다.</p>
+<p>이 글은 같은 문제를 Andrej Karpathy의 글과 회고를 통해 다시 읽는다. 다만 Karpathy를 증명 도장처럼 쓰지는 않는다. 짧은 X 문구들은 접근이 막히거나 맥락이 잘리기 쉽다. 여기서는 Software 2.0, Verifiability, MenuGen 회고처럼 비교적 맥락을 따라갈 수 있는 글을 렌즈로 삼아, 내 repo 규칙을 어떻게 써야 하는지 본다.</p>
+<p><img src="/assets/blog/karpathy-context-engineering-rules/hero-context-stack.png" alt="짧은 요청 위로 repo 규칙, 도메인 문서, 검증 지점이 층처럼 쌓인 구조."></p>
+<h2 id="반복-지시는-컨텍스트가-된다">반복 지시는 컨텍스트가 된다</h2>
+<p>프롬프트는 이번 요청의 목표를 담는 곳이다.</p>
+<p>예를 들어 이런 문장은 단발성 프롬프트로도 쓸 수 있다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>이번 글은 초안까지만 만들어줘.</span></span>
+<span class="line"><span>이 함수만 보고 버그 가능성을 확인해줘.</span></span>
+<span class="line"><span>오늘은 코드 수정 없이 리뷰만 해줘.</span></span></code></pre>
+<p>이런 말은 그날의 요청이다. 다음 작업에서는 달라질 수 있다.</p>
+<p>반대로 매번 반복되는 말이 있다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> 새 글은 기본적으로 </span><span style="color:#79B8FF">`draft: true`</span><span style="color:#E1E4E8">로 시작한다.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> 공개 발행, deploy, push는 별도 확인 후 진행한다.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> 완료 전 가능한 check/build 명령을 실행한다.</span></span></code></pre>
+<p>이건 그날의 부탁이 아니라 작업 환경의 기본값이다. AI에게 영어로 지시하는 일이 중요해질수록, 반복되는 영어 지시도 코드처럼 관리해야 한다. 어디에 두는지, 언제 읽히는지, 어떻게 검증되는지가 중요해진다.</p>
+<p>그래서 <code>AGENTS.md</code>나 <code>CLAUDE.md</code>를 긴 프롬프트 저장소로만 보면 부족하다. 이 파일들은 에이전트가 작업할 때 다시 봐야 할 컨텍스트에 가깝다. 여기서 컨텍스트는 모델이 판단할 때 보는 파일, 명령, 금지 조건, 검증 기준을 뜻한다.</p>
+<h2 id="software-20-렌즈로-보면-검증이-남는다">Software 2.0 렌즈로 보면 검증이 남는다</h2>
+<p>Karpathy의 Software 2.0 글에서 내가 가져온 핵심은 “사람이 모든 규칙을 직접 쓰지 않는 영역이 커진다”는 점이다. 신경망에서는 사람이 코드를 한 줄씩 쓰기보다 데이터, 모델 구조, 학습 과정이 프로그램의 큰 부분을 만든다.</p>
+<p>AI 코딩도 비슷한 압력을 만든다. 내가 모든 줄을 직접 쓰지 않는다면, 내가 책임져야 할 것은 더 명확해진다.</p>
+<ul>
+<li>무엇을 만들지 설명하는 사양</li>
+<li>어떤 파일과 문서를 볼지 정하는 컨텍스트</li>
+<li>결과를 받아들일지 판단하는 검증 기준</li>
+<li>위험 작업 앞에서 멈추는 절차</li>
+</ul>
+<p>Karpathy의 Verifiability 글은 이 지점을 더 직접적으로 건드린다. 자동화하기 쉬운 것은 내가 검증할 수 있는 일이다. 반대로 검증하지 못하는 일을 빠르게 맡기면, 속도는 올라가도 책임은 흐려진다.</p>
+<p>그래서 규칙 파일에는 추상적인 가치보다 검증 가능한 문장이 더 잘 맞는다.</p>
+<p>예를 들어 “좋은 코드를 작성한다”보다 “완료 전 <code>npm run check</code>와 <code>npm run build</code>를 실행한다”가 낫다. “사용자 경험을 고려한다”보다 “새 UI는 모바일과 데스크톱에서 텍스트 겹침을 확인한다”가 낫다. “안전하게 작업한다”보다 “삭제, push, deploy는 확인 전에는 진행하지 않는다”가 낫다.</p>
+<p>좋은 규칙 파일은 에이전트를 똑똑하게 만드는 문서가 아니다. 검증 가능한 작업 단위를 더 자주 보게 만드는 문서다.</p>
+<h2 id="menugen-회고는-80-착각을-보여준다">MenuGen 회고는 80% 착각을 보여준다</h2>
+<p>Karpathy가 MenuGen을 만들며 남긴 회고도 같은 방향으로 읽힌다. 첫 프로토타입은 금방 나온다. 자연어로 만들고, 실행 결과를 보며 고치면 작동하는 데모까지는 빠르다.</p>
+<p>하지만 첫 결과를 보고 “80% done”처럼 느껴도, 실제로는 “closer to 20%”에 가까울 수 있다. 배포, 환경 변수, 인증, 결제, rate limit, deprecated API, dev/prod 설정으로 들어가면 일이 전혀 달라진다.</p>
+<p>나는 이 지점이 규칙 파일 문제와 바로 이어진다고 본다. 감각 코딩(vibe coding)은 데모를 빨리 만든다. 하지만 서비스를 책임지는 작업으로 넘어가면 다음 질문이 필요하다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>어디까지 AI에게 맡길 것인가.</span></span>
+<span class="line"><span>어떤 변경은 사람이 먼저 판단할 것인가.</span></span>
+<span class="line"><span>무엇을 통과해야 완료라고 부를 것인가.</span></span>
+<span class="line"><span>되돌리기 어려운 작업은 어디서 멈출 것인가.</span></span></code></pre>
+<p>이 질문의 답은 대화창보다 규칙 파일에 더 잘 남는다.</p>
+<h2 id="repo-규칙에는-실행-조건을-쓴다">repo 규칙에는 실행 조건을 쓴다</h2>
+<p>Karpathy의 문장을 그대로 따라 쓰는 것이 목적은 아니다. 내가 가져갈 기준은 더 실무적이다.</p>
+<p>규칙 파일에는 에이전트가 실제로 멈추거나 확인할 수 있는 문장을 둔다.</p>
+<ul>
+<li>위치 기준: 새 블로그 글은 <code>src/content/blog</code>에 둔다.</li>
+<li>기본 상태: 새 글은 기본적으로 <code>draft: true</code>로 시작한다.</li>
+<li>금지 범위: <code>dist/</code> 같은 build 산출물은 직접 수정하지 않는다.</li>
+<li>승인 경계: 삭제, push, deploy는 확인 전에는 하지 않는다.</li>
+<li>검증 기준: 완료 전 <code>npm run check</code>와 <code>npm run build</code>를 실행한다.</li>
+</ul>
+<p>이 문장들은 화려하지 않다. 대신 다음 작업에서 바로 작동한다. 에이전트가 코드를 쓰기 전에 봐야 할 것, 사람이 확인해야 할 것, 완료라고 부르기 전에 통과해야 할 것이 보인다.</p>
+<p>반대로 “좋은 설계를 한다”, “사용자를 고려한다”, “안전하게 작업한다” 같은 문장은 그대로 두면 약하다. 필요한 말일 수는 있지만, 그것만으로는 행동이 바뀌기 어렵다. 이런 문장을 쓰려면 무엇을 보면 좋은 설계인지, 어떤 화면에서 사용자를 확인할지, 어떤 작업 앞에서 멈출지까지 같이 적어야 한다.</p>
+<h2 id="컨텍스트-엔지니어링은-긴-프롬프트가-아니다">컨텍스트 엔지니어링은 긴 프롬프트가 아니다</h2>
+<p>컨텍스트 엔지니어링(context engineering)은 프롬프트를 길게 쓰는 일이 아니다. 모델이 다음 판단을 할 때 무엇을 보게 할지 설계하는 일에 가깝다.</p>
+<p>여기서 중요한 단어는 “많이”가 아니라 “알맞게”다.</p>
+<p>초보적인 실수는 모든 것을 한 파일에 넣는 것이다. 프로젝트 철학, 코드 스타일, 배포 절차, 보안 예외, 글쓰기 톤, 검수 기준, 장기 메모를 전부 root 규칙 파일에 넣으면 든든해 보인다. 하지만 실제 작업에서는 중요한 문장이 묻힌다.</p>
+<p>컨텍스트 엔지니어링 관점에서 규칙 파일은 세 층으로 나누는 편이 낫다.</p>
+<ul>
+<li>최상위(root) 규칙은 모든 작업에 반복 적용되는 짧은 기준이다. 위험 작업 확인, 검증, 수정 범위처럼 매번 빠지면 안 되는 내용을 둔다.</li>
+<li>작업 분야(domain) 문서는 특정 작업 때만 필요한 기준이다. 글쓰기 가이드, UI 기준, 배포 절차처럼 작업 종류가 맞을 때만 꺼내 보는 쪽이 낫다.</li>
+<li>현재 프롬프트는 이번 요청의 목표와 예외다. “Karpathy 인용 중심 초안”이나 “파일로 저장”처럼 오늘 달라질 수 있는 조건을 둔다.</li>
+</ul>
+<p>OpenAI의 Codex 문서는 <code>AGENTS.md</code>를 global, project, 현재 작업 경로 기준으로 instruction chain에 넣는다고 설명한다. 가까운 디렉터리의 지시가 더 구체적인 기준이 된다. Claude Code 쪽은 <code>CLAUDE.md</code>를 읽고, 이미 <code>AGENTS.md</code>를 쓰는 repo라면 import나 symlink로 연결할 수 있다고 안내한다.</p>
+<p>도구별 로딩 방식은 다르다. 하지만 운영 관점의 결론은 같다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>반복 기준은 repo에 두고,</span></span>
+<span class="line"><span>작업별 기준은 필요할 때만 보이게 하고,</span></span>
+<span class="line"><span>이번 요청은 짧게 남긴다.</span></span>
+<span class="line"><span>검증할 수 없는 변경은 작게 쪼개거나 멈춘다.</span></span></code></pre>
+<p>이게 내가 더 분명하게 잡은 기준이다. 프롬프트 엔지니어링은 모델에게 무엇을 말할지 다룬다. 컨텍스트 엔지니어링은 모델이 무엇을 보고 일하게 할지 다룬다. AI agent와 repo에서 일할 때는 후자가 점점 더 중요해진다.</p>
+<h2 id="결론">결론</h2>
+<p>핵심 문장을 다시 쓰면 이렇다.</p>
+<blockquote>
+<p>반복되는 기준은 프롬프트가 아니라 컨텍스트다.</p>
+</blockquote>
+<p>Karpathy의 글과 회고를 렌즈로 삼아도 같은 곳에 도착한다. 사람이 모든 줄을 직접 쓰지 않는다면, 사람이 더 신경 써야 할 것은 사양, 컨텍스트, 검증, 멈춤 조건이다. 감각 코딩은 출발 속도를 올려줄 수 있지만, repo 규칙은 그 결과를 내가 책임질 수 있는 작업으로 바꾼다.</p>
+<p>오늘 바로 적용할 기준은 이 정도면 충분하다.</p>
+<ul>
+<li>세 번 반복한 프롬프트 문장은 규칙 파일 후보로 옮긴다.</li>
+<li>규칙 파일에는 가치 판단보다 멈춤 조건과 검증 조건을 남긴다.</li>
+<li>AI에게 바로 코드부터 요구하지 말고 접근법과 trade-off를 먼저 보게 한다.</li>
+<li>내가 검증할 수 없는 변경은 작게 쪼개거나 멈춘다.</li>
+<li>공개, 삭제, push, deploy처럼 되돌리기 어려운 일은 문서가 아니라 실제 확인 절차로 막는다.</li>
+</ul>
+<p>좋은 프롬프트는 여전히 필요하다. 다만 좋은 프롬프트만으로는 반복 작업을 버티기 어렵다.</p>
+<p>다음 글에서는 이 기준을 한 단계 더 좁혀, <a href="/writing/3/what-are-codex-skills/">Codex Skill을 어떤 반복 절차에 써야 하는지</a> 정리한다.</p>
+<h2 id="참고한-원문과-문서">참고한 원문과 문서</h2>
+<ul>
+<li>Andrej Karpathy, <a href="https://karpathy.medium.com/software-2-0-a64152b37c35">Software 2.0</a></li>
+<li>Y Combinator, <a href="https://www.youtube.com/watch?v=LCEmiRjPEtQ">Andrej Karpathy: Software Is Changing (Again)</a></li>
+<li>Rosetta transcript page, <a href="https://rosetta.to/u/ycombinator/andrej-karpathy-software-is-changing-again">Andrej Karpathy: Software Is Changing (Again)</a></li>
+<li>Andrej Karpathy, <a href="https://karpathy.bearblog.dev/vibe-coding-menugen/">Vibe coding MenuGen</a></li>
+<li>Andrej Karpathy, <a href="https://karpathy.bearblog.dev/verifiability/">Verifiability</a></li>
+<li>OpenAI Developers, <a href="https://developers.openai.com/codex/guides/agents-md">Custom instructions with AGENTS.md</a></li>
+<li>Claude Code Docs, <a href="https://code.claude.com/docs/en/memory">How Claude remembers your project</a></li>
+<li>Simon Willison, <a href="https://simonwillison.net/2025/Mar/19/vibe-coding/">Not all AI-assisted programming is vibe coding</a></li>
+<li>Merriam-Webster, <a href="https://www.merriam-webster.com/dictionary/vibe%20coding">vibe coding definition</a></li>
+<li>Collins Dictionary, <a href="https://www.collinsdictionary.com/woty">Word of the Year 2025</a></li>
+</ul> </div> <section class="dynamic-blog" data-dynamic-blog data-api-base data-post-id="2" data-canonical-path="/writing/2/karpathy-context-engineering-rules/" data-turnstile-site-key hidden aria-labelledby="dynamic-blog-title" data-astro-cid-xt6jigyi> <div class="dynamic-status-row" data-astro-cid-xt6jigyi> <div data-astro-cid-xt6jigyi> <h2 id="dynamic-blog-title" data-astro-cid-xt6jigyi>반응</h2> <p class="dynamic-intro" data-astro-cid-xt6jigyi>댓글은 제출 즉시 공개되며, 작성 때 정한 비밀번호로 삭제할 수 있습니다.</p> </div> <div class="dynamic-meta" aria-label="글 반응 요약" data-astro-cid-xt6jigyi> <span data-comment-count hidden data-astro-cid-xt6jigyi></span> <span data-view-count hidden data-astro-cid-xt6jigyi></span> </div> </div> <p class="dynamic-status" data-dynamic-status role="status" aria-live="polite" data-astro-cid-xt6jigyi>댓글을 불러오는 중입니다.</p> <div class="comment-list" data-comment-list hidden data-astro-cid-xt6jigyi></div> <form class="comment-delete-panel" data-delete-form hidden aria-labelledby="comment-delete-title" data-astro-cid-xt6jigyi> <div class="delete-panel-copy" data-astro-cid-xt6jigyi> <p id="comment-delete-title" class="delete-panel-title" data-delete-label data-astro-cid-xt6jigyi>댓글을 삭제합니다.</p> <p class="delete-panel-note" data-astro-cid-xt6jigyi>댓글 작성 때 입력한 삭제 비밀번호가 필요합니다.</p> </div> <label data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>삭제 비밀번호</span> <input name="deletePassword" type="password" autocomplete="current-password" minlength="4" maxlength="120" required data-astro-cid-xt6jigyi> </label> <div class="delete-panel-footer" data-astro-cid-xt6jigyi> <p data-delete-status role="status" aria-live="polite" data-astro-cid-xt6jigyi></p> <div class="delete-actions" data-astro-cid-xt6jigyi> <button type="submit" data-astro-cid-xt6jigyi>삭제</button> <button type="button" data-cancel-delete data-astro-cid-xt6jigyi>취소</button> </div> </div> </form> <form class="comment-form" data-comment-form data-astro-cid-xt6jigyi> <input type="hidden" name="parentId" data-parent-id data-astro-cid-xt6jigyi> <p class="comment-form-note" data-astro-cid-xt6jigyi>이름과 댓글은 공개됩니다. 삭제 비밀번호는 화면에 보이지 않습니다.</p> <div class="reply-target" data-reply-target hidden data-astro-cid-xt6jigyi> <span data-reply-label role="status" aria-live="polite" data-astro-cid-xt6jigyi></span> <button type="button" data-clear-reply data-astro-cid-xt6jigyi>답글 취소</button> </div> <label class="comment-field" data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>이름</span> <input name="authorName" type="text" autocomplete="name" maxlength="80" required data-astro-cid-xt6jigyi> </label> <label class="comment-field" data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>댓글</span> <textarea name="body" rows="5" minlength="2" maxlength="4000" required aria-describedby="comment-body-help" data-astro-cid-xt6jigyi></textarea> <span id="comment-body-help" class="field-help" data-astro-cid-xt6jigyi>제출하면 승인 대기 없이 바로 공개됩니다.</span> </label> <label class="comment-field" data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>삭제 비밀번호</span> <input name="deletePassword" type="password" autocomplete="new-password" minlength="4" maxlength="120" required aria-describedby="comment-password-help" data-astro-cid-xt6jigyi> <span id="comment-password-help" class="field-help" data-astro-cid-xt6jigyi>나중에 이 댓글을 직접 삭제할 때만 사용합니다.</span> </label> <div class="turnstile-field" data-astro-cid-xt6jigyi> <span class="turnstile-label" data-astro-cid-xt6jigyi>보안 확인</span> <div class="turnstile-slot" data-turnstile-slot data-astro-cid-xt6jigyi></div> <p class="field-help" data-astro-cid-xt6jigyi>확인이 끝나면 댓글을 제출할 수 있습니다.</p> </div> <div class="form-actions" data-astro-cid-xt6jigyi> <p data-form-status role="status" aria-live="polite" data-astro-cid-xt6jigyi>댓글은 제출 즉시 공개됩니다.</p> <button type="submit" data-astro-cid-xt6jigyi>댓글 남기기</button> </div> </form> </section> <script>
+  const getKstDay = () => {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Seoul',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(new Date());
+    const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+    return `${values.year}-${values.month}-${values.day}`;
+  };
+
+  const joinEndpoint = (base, path) => `${base.replace(/\/$/, '')}${path}`;
+
+  const formatViewCount = (value) => {
+    if (!Number.isFinite(value) || value < 0) return '';
+    return `조회 집계 ${value.toLocaleString('ko-KR')}회`;
+  };
+
+  const countComments = (comments) => {
+    if (!Array.isArray(comments)) return 0;
+    return comments.reduce((total, comment) => total + 1 + countComments(comment.replies), 0);
+  };
+
+  const formatCommentCount = (value) => {
+    if (!Number.isFinite(value) || value < 0) return '';
+    return `댓글 ${value.toLocaleString('ko-KR')}개`;
+  };
+
+  const safeLocalStorage = {
+    get: (key) => {
+      try {
+        return window.localStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    },
+    set: (key, value) => {
+      try {
+        window.localStorage.setItem(key, value);
+      } catch {}
+    },
+  };
+
+  const createElement = (tag, className, text) => {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text) element.textContent = text;
+    return element;
+  };
+
+  const renderComments = (container, comments, depth = 0) => {
+    for (const comment of comments) {
+      const authorName = comment.authorName || '익명';
+      const article = createElement('article', depth > 0 ? 'comment-item comment-item--reply' : 'comment-item');
+      article.style.setProperty('--reply-depth', String(Math.min(depth, 6)));
+      article.dataset.commentId = comment.id;
+      article.setAttribute('aria-label', depth > 0 ? `${authorName}의 답글` : `${authorName}의 댓글`);
+
+      const header = createElement('header', 'comment-header');
+      const createdAt = new Date(comment.createdAt);
+      const time = createElement('time', '', createdAt.toLocaleDateString('ko-KR'));
+      if (!Number.isNaN(createdAt.getTime())) {
+        time.dateTime = createdAt.toISOString();
+        time.title = createdAt.toLocaleString('ko-KR');
+      }
+      header.append(createElement('strong', '', authorName), time);
+
+      const body = createElement('p', 'comment-body', comment.body);
+      const actions = createElement('div', 'comment-actions');
+      const replyButton = createElement('button', 'comment-reply', '답글');
+      replyButton.type = 'button';
+      replyButton.dataset.replyTo = comment.id;
+      replyButton.dataset.replyAuthor = authorName;
+      const deleteButton = createElement('button', 'comment-delete', '삭제');
+      deleteButton.type = 'button';
+      deleteButton.dataset.deleteFor = comment.id;
+      deleteButton.dataset.deleteAuthor = authorName;
+      actions.append(replyButton, deleteButton);
+
+      article.append(header, body, actions);
+
+      container.append(article);
+
+      if (Array.isArray(comment.replies) && comment.replies.length > 0) {
+        renderComments(container, comment.replies, depth + 1);
+      }
+    }
+  };
+
+  const setStatus = (element, text, hidden = false) => {
+    element.textContent = text;
+    element.hidden = hidden;
+  };
+
+  const initTurnstile = (root, siteKey) =>
+    new Promise((resolve) => {
+      if (!siteKey) {
+        resolve({ getToken: () => '', reset: () => {} });
+        return;
+      }
+
+      const slot = root.querySelector('[data-turnstile-slot]');
+      let token = '';
+      const render = () => {
+        if (!window.turnstile || !slot) {
+          resolve({ getToken: () => token, reset: () => {} });
+          return;
+        }
+
+        const widgetId = window.turnstile.render(slot, {
+          sitekey: siteKey,
+          theme: 'auto',
+          size: 'flexible',
+          callback: (value) => {
+            token = value;
+          },
+          'expired-callback': () => {
+            token = '';
+          },
+          'error-callback': () => {
+            token = '';
+          },
+        });
+
+        resolve({
+          getToken: () => token,
+          reset: () => {
+            token = '';
+            window.turnstile?.reset(widgetId);
+          },
+        });
+      };
+
+      if (window.turnstile) {
+        render();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.defer = true;
+      script.addEventListener('load', render, { once: true });
+      script.addEventListener('error', () => resolve({ getToken: () => '', reset: () => {} }), { once: true });
+      document.head.append(script);
+    });
+
+  const initDynamicBlog = async (root) => {
+    const apiBase = root.dataset.apiBase;
+    const postId = Number(root.dataset.postId);
+    const canonicalPath = root.dataset.canonicalPath;
+    const siteKey = root.dataset.turnstileSiteKey;
+
+    if (!apiBase || !Number.isInteger(postId) || !canonicalPath) {
+      root.hidden = true;
+      return;
+    }
+
+    const viewCount = root.querySelector('[data-view-count]');
+    const commentCount = root.querySelector('[data-comment-count]');
+    const status = root.querySelector('[data-dynamic-status]');
+    const list = root.querySelector('[data-comment-list]');
+    const form = root.querySelector('[data-comment-form]');
+    const formStatus = root.querySelector('[data-form-status]');
+    const parentInput = root.querySelector('[data-parent-id]');
+    const replyTarget = root.querySelector('[data-reply-target]');
+    const replyLabel = root.querySelector('[data-reply-label]');
+    const clearReply = root.querySelector('[data-clear-reply]');
+    const deleteForm = root.querySelector('[data-delete-form]');
+    const deletePasswordInput = deleteForm.querySelector('input[name="deletePassword"]');
+    const deleteLabel = root.querySelector('[data-delete-label]');
+    const deleteStatus = root.querySelector('[data-delete-status]');
+    const cancelDelete = root.querySelector('[data-cancel-delete]');
+    const turnstile = await initTurnstile(root, siteKey);
+    let deleteCommentId = '';
+
+    if (!siteKey) {
+      const submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = '제출 비활성화';
+      setStatus(formStatus, '댓글 제출은 Turnstile 설정 후 사용할 수 있습니다.');
+    }
+
+    const refreshPublicData = async () => {
+      const response = await fetch(joinEndpoint(apiBase, `/post-public-data?postId=${postId}`), {
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!response.ok) throw new Error('public data failed');
+
+      const data = await response.json();
+      const comments = Array.isArray(data.comments) ? data.comments : [];
+      const viewLabel = formatViewCount(data.viewCount);
+      const commentLabel = Array.isArray(data.comments) ? formatCommentCount(countComments(comments)) : '';
+      viewCount.textContent = viewLabel;
+      viewCount.hidden = !viewLabel;
+      commentCount.textContent = commentLabel;
+      commentCount.hidden = !commentLabel;
+      list.replaceChildren();
+
+      if (comments.length > 0) {
+        renderComments(list, comments);
+        list.hidden = false;
+        setStatus(status, '', true);
+      } else {
+        list.hidden = true;
+        setStatus(status, '아직 댓글이 없습니다. 첫 댓글은 제출하면 바로 공개됩니다.');
+      }
+    };
+
+    const pageviewKey = `blog-pageview:${postId}:${getKstDay()}`;
+
+    if (!safeLocalStorage.get(pageviewKey)) {
+      fetch(joinEndpoint(apiBase, '/pageview'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          postId,
+          canonicalPath,
+          clientNonce: crypto.randomUUID?.() ?? String(Date.now()),
+        }),
+      })
+        .then(async (response) => {
+          if (!response.ok) return;
+          safeLocalStorage.set(pageviewKey, '1');
+          const data = await response.json();
+          const viewLabel = formatViewCount(data.viewCount);
+          if (viewLabel) {
+            viewCount.textContent = viewLabel;
+            viewCount.hidden = false;
+          }
+        })
+        .catch(() => {});
+    }
+
+    try {
+      await refreshPublicData();
+    } catch {
+      setStatus(status, '반응 영역을 지금 불러오지 못했습니다.');
+    }
+
+    list.addEventListener('click', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target) return;
+
+      const replyButton = target.closest('[data-reply-to]');
+      const deleteButton = target.closest('[data-delete-for]');
+
+      if (replyButton) {
+        parentInput.value = replyButton.dataset.replyTo;
+        replyLabel.textContent = `답글 작성 중: ${replyButton.dataset.replyAuthor}`;
+        replyTarget.hidden = false;
+        form.querySelector('textarea').focus();
+        return;
+      }
+
+      if (!deleteButton) return;
+      deleteCommentId = deleteButton.dataset.deleteFor;
+      deleteLabel.textContent = `${deleteButton.dataset.deleteAuthor}의 댓글을 삭제합니다.`;
+      deletePasswordInput.value = '';
+      deleteStatus.textContent = '삭제 비밀번호를 입력해 주세요.';
+      deleteForm.hidden = false;
+      deletePasswordInput.focus();
+    });
+
+    cancelDelete.addEventListener('click', () => {
+      deleteCommentId = '';
+      deletePasswordInput.value = '';
+      deleteStatus.textContent = '';
+      deleteForm.hidden = true;
+    });
+
+    deleteForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const deletePassword = deletePasswordInput.value.trim();
+
+      if (!deleteCommentId || deletePassword.length < 4) {
+        deleteStatus.textContent = '삭제 비밀번호를 입력해 주세요.';
+        return;
+      }
+
+      const submitButton = deleteForm.querySelector('button[type="submit"]');
+      const submitLabel = submitButton.textContent;
+      submitButton.disabled = true;
+      deleteForm.setAttribute('aria-busy', 'true');
+      submitButton.textContent = '삭제 중...';
+      deleteStatus.textContent = '삭제 중입니다.';
+
+      try {
+        const response = await fetch(joinEndpoint(apiBase, '/comments/delete'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            commentId: deleteCommentId,
+            deletePassword,
+          }),
+        });
+
+        if (!response.ok) {
+          if (response.status === 403) {
+            deleteStatus.textContent = '삭제 비밀번호가 맞지 않습니다.';
+            return;
+          }
+
+          throw new Error('comment delete failed');
+        }
+
+        deleteCommentId = '';
+        deletePasswordInput.value = '';
+        deleteForm.hidden = true;
+        await refreshPublicData();
+        setStatus(status, '댓글을 삭제했습니다.');
+      } catch {
+        deleteStatus.textContent = '댓글을 삭제하지 못했습니다. 잠시 뒤 다시 시도해 주세요.';
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = submitLabel;
+        deleteForm.removeAttribute('aria-busy');
+      }
+    });
+
+    clearReply.addEventListener('click', () => {
+      parentInput.value = '';
+      replyTarget.hidden = true;
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const token = turnstile.getToken();
+
+      if (!token) {
+        setStatus(formStatus, '보안 확인을 마친 뒤 제출할 수 있습니다.');
+        return;
+      }
+
+      const submitButton = form.querySelector('button[type="submit"]');
+      const submitLabel = submitButton.textContent;
+      submitButton.disabled = true;
+      form.setAttribute('aria-busy', 'true');
+      submitButton.textContent = '접수 중...';
+      setStatus(formStatus, '접수 중입니다.');
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(joinEndpoint(apiBase, '/comments'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            postId,
+            authorName: String(formData.get('authorName') ?? ''),
+            body: String(formData.get('body') ?? ''),
+            deletePassword: String(formData.get('deletePassword') ?? ''),
+            parentId: parentInput.value || null,
+            turnstileToken: token,
+          }),
+        });
+
+        if (!response.ok) throw new Error('comment submit failed');
+
+        form.reset();
+        parentInput.value = '';
+        replyTarget.hidden = true;
+        turnstile.reset();
+        await refreshPublicData();
+        setStatus(formStatus, '댓글이 공개됐습니다.');
+      } catch {
+        setStatus(formStatus, '댓글을 접수하지 못했습니다. 잠시 뒤 다시 시도해 주세요.');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = submitLabel;
+        form.removeAttribute('aria-busy');
+      }
+    });
+  };
+
+  for (const root of document.querySelectorAll('[data-dynamic-blog]')) {
+    initDynamicBlog(root);
+  }
+</script> <section class="related-posts" aria-labelledby="related-posts-title" data-astro-cid-gjtny2mx> <div class="related-heading" data-astro-cid-gjtny2mx> <p class="eyebrow" data-astro-cid-gjtny2mx>Related writing</p> <h2 id="related-posts-title" data-astro-cid-gjtny2mx>이어 읽을 글</h2> </div> <div class="related-list" data-astro-cid-gjtny2mx> <a href="/writing/1/repeated-prompts-belong-in-rules/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>에이전트 워크플로</span> <strong data-astro-cid-gjtny2mx>같은 말을 세 번째 붙여넣고 있다면 규칙 파일로 빼야 한다</strong> <small data-astro-cid-gjtny2mx>AI 코딩 에이전트에게 같은 금지 조건을 반복해서 붙여넣던 경험을 바탕으로, 프롬프트와 규칙 파일을 나누는 기준을 정리한다.</small> </a><a href="/writing/3/what-are-codex-skills/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>에이전트 워크플로</span> <strong data-astro-cid-gjtny2mx>Codex Skill은 무엇인가: AGENTS.md와 어떻게 다를까</strong> <small data-astro-cid-gjtny2mx>Codex Skill을 SKILL.md 중심의 재사용 절차 묶음으로 설명하고, AGENTS.md, 실행 검사(hook), 외부 도구 연결(MCP), 설치 묶음(plugin)과 어떻게 나눠야 하는지 정리한다.</small> </a><a href="/writing/7/agent-hooks-safety-rails/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>에이전트 워크플로</span> <strong data-astro-cid-gjtny2mx>에이전트 훅은 자동화가 아니라 사고방지 장치다</strong> <small data-astro-cid-gjtny2mx>AI agent 작업에서 hook을 어디에 써야 하는지, AGENTS.md나 Skill과 어떻게 나눠야 하는지, 위험 작업을 막는 가드레일로 설계할 때의 기준을 정리한다.</small> </a> </div> </section> <nav class="post-neighbors" aria-label="이전 글과 다음 글" data-astro-cid-gjtny2mx> <a href="/writing/1/repeated-prompts-belong-in-rules/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>이전 글</span> <strong data-astro-cid-gjtny2mx>같은 말을 세 번째 붙여넣고 있다면 규칙 파일로 빼야 한다</strong> </a> <a href="/writing/3/what-are-codex-skills/" class="next-link" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>다음 글</span> <strong data-astro-cid-gjtny2mx>Codex Skill은 무엇인가: AGENTS.md와 어떻게 다를까</strong> </a> </nav> </article>  </main> <footer class="site-footer"> <div class="container"> <div> <strong>hangokudao</strong> <span>Codex, Claude Code 등을 사용하며 쌓은 기록과 방법론 이야기</span> </div> <nav aria-label="하단 내비게이션"> <a href="https://github.com/hangokudao" rel="noreferrer" target="_blank">GitHub</a> <a href="/writing/">글</a> <a href="/projects/">프로젝트</a> <a href="/about/">소개</a> </nav> </div> </footer> </div> </body></html>

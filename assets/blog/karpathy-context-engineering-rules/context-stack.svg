@@ -1,0 +1,39 @@
+<svg width="1200" height="640" viewBox="0 0 1200 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Context stack for AI agent work</title>
+  <desc id="desc">A short prompt sits above repository rules, domain documents, and verification gates.</desc>
+  <rect width="1200" height="640" fill="#FCF9F8"/>
+  <path d="M0 0H1200V122H0V0Z" fill="#DFF4F1"/>
+  <path d="M0 522H1200V640H0V522Z" fill="#FFF3E8"/>
+  <text x="88" y="82" fill="#1C1B1B" font-family="Hanken Grotesk, Noto Sans KR, Arial, sans-serif" font-size="54" font-weight="700">Context is a stack</text>
+  <text x="88" y="126" fill="#3D4947" font-family="Noto Sans KR, Arial, sans-serif" font-size="28">Repeatable context lives in the repo.</text>
+
+  <g transform="translate(144 188)">
+    <rect x="78" y="0" width="680" height="74" fill="#FFFFFF" stroke="#00685F" stroke-width="3"/>
+    <text x="112" y="49" fill="#005049" font-family="JetBrains Mono, monospace" font-size="30" font-weight="500">Prompt</text>
+    <text x="304" y="49" fill="#1C1B1B" font-family="Noto Sans KR, Arial, sans-serif" font-size="28">today's request</text>
+
+    <rect x="52" y="98" width="732" height="74" fill="#FFFFFF" stroke="#BCC9C6" stroke-width="2"/>
+    <text x="86" y="147" fill="#904D00" font-family="JetBrains Mono, monospace" font-size="30" font-weight="500">Repo Rules</text>
+    <text x="304" y="147" fill="#1C1B1B" font-family="Noto Sans KR, Arial, sans-serif" font-size="28">defaults and stops</text>
+
+    <rect x="26" y="196" width="784" height="74" fill="#FFFFFF" stroke="#BCC9C6" stroke-width="2"/>
+    <text x="60" y="245" fill="#904D00" font-family="JetBrains Mono, monospace" font-size="30" font-weight="500">Domain Docs</text>
+    <text x="304" y="245" fill="#1C1B1B" font-family="Noto Sans KR, Arial, sans-serif" font-size="28">writing and SEO</text>
+
+    <rect x="0" y="294" width="836" height="74" fill="#FFFFFF" stroke="#BCC9C6" stroke-width="2"/>
+    <text x="34" y="343" fill="#904D00" font-family="JetBrains Mono, monospace" font-size="30" font-weight="500">Verify Gate</text>
+    <text x="304" y="343" fill="#1C1B1B" font-family="Noto Sans KR, Arial, sans-serif" font-size="28">check, build, visual</text>
+  </g>
+
+  <g transform="translate(892 218)">
+    <rect width="220" height="220" fill="#FFFFFF" stroke="#00685F" stroke-width="3"/>
+    <text x="28" y="54" fill="#005049" font-family="JetBrains Mono, monospace" font-size="18" font-weight="500">repeatable</text>
+    <text x="28" y="86" fill="#005049" font-family="JetBrains Mono, monospace" font-size="18" font-weight="500">context</text>
+    <path d="M39 124H181" stroke="#D9E2DF" stroke-width="2"/>
+    <text x="28" y="166" fill="#904D00" font-family="JetBrains Mono, monospace" font-size="20" font-weight="500">&gt;</text>
+    <text x="58" y="166" fill="#1C1B1B" font-family="JetBrains Mono, monospace" font-size="18">clever prompt</text>
+  </g>
+
+  <path d="M775 374C835 374 844 328 884 328" stroke="#00685F" stroke-width="4"/>
+  <path d="M884 328L864 318L868 342L884 328Z" fill="#00685F"/>
+</svg>

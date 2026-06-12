@@ -1,0 +1,500 @@
+<!DOCTYPE html><html lang="ko"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="AI agent 작업에서 hook을 어디에 써야 하는지, AGENTS.md나 Skill과 어떻게 나눠야 하는지, 위험 작업을 막는 가드레일로 설계할 때의 기준을 정리한다."><link rel="canonical" href="https://hangokudao.github.io/writing/7/agent-hooks-safety-rails/"><link rel="alternate" type="application/rss+xml" title="hangokudao RSS" href="https://hangokudao.github.io/rss.xml"><meta property="og:site_name" content="hangokudao"><meta property="og:title" content="에이전트 훅은 자동화가 아니라 사고방지 장치다 | hangokudao"><meta property="og:description" content="AI agent 작업에서 hook을 어디에 써야 하는지, AGENTS.md나 Skill과 어떻게 나눠야 하는지, 위험 작업을 막는 가드레일로 설계할 때의 기준을 정리한다."><meta property="og:type" content="article"><meta property="og:url" content="https://hangokudao.github.io/writing/7/agent-hooks-safety-rails/"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="에이전트 훅은 자동화가 아니라 사고방지 장치다 | hangokudao"><meta name="twitter:description" content="AI agent 작업에서 hook을 어디에 써야 하는지, AGENTS.md나 Skill과 어떻게 나눠야 하는지, 위험 작업을 막는 가드레일로 설계할 때의 기준을 정리한다."><meta property="article:published_time" content="2026-06-11T00:00:00.000Z"><meta property="article:tag" content="ai-agent"><meta property="article:tag" content="codex"><meta property="article:tag" content="hooks"><meta property="article:tag" content="workflow"><meta property="article:tag" content="safety"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"에이전트 훅은 자동화가 아니라 사고방지 장치다","description":"AI agent 작업에서 hook을 어디에 써야 하는지, AGENTS.md나 Skill과 어떻게 나눠야 하는지, 위험 작업을 막는 가드레일로 설계할 때의 기준을 정리한다.","datePublished":"2026-06-11T00:00:00.000Z","dateModified":"2026-06-11T00:00:00.000Z","author":{"@type":"Person","name":"hangokudao","url":"https://github.com/hangokudao"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://hangokudao.github.io/writing/7/agent-hooks-safety-rails/"},"url":"https://hangokudao.github.io/writing/7/agent-hooks-safety-rails/","keywords":["ai-agent","codex","hooks","workflow","safety"]}</script><link rel="icon" href="/favicon.svg" type="image/svg+xml"><title>에이전트 훅은 자동화가 아니라 사고방지 장치다 | hangokudao</title><link rel="stylesheet" href="/_astro/_urlSlug_.CbYNetVa.css">
+<link rel="stylesheet" href="/_astro/BaseLayout.F8fUCOQD.css"></head> <body> <div class="site-shell"> <a class="skip-link" href="#content">본문으로 건너뛰기</a> <header class="site-header" data-astro-cid-ctg3m53h> <div class="container header-inner" data-astro-cid-ctg3m53h> <a class="brand" href="/" aria-label="hangokudao 홈" data-astro-cid-ctg3m53h> <strong data-astro-cid-ctg3m53h>hangokudao</strong> <span data-astro-cid-ctg3m53h>AI 에이전트와 함께 성장하기</span> </a> <nav class="nav-links" aria-label="주요 내비게이션" data-astro-cid-ctg3m53h> <a class="nav-link" href="/" data-astro-cid-ctg3m53h> 홈 </a><a class="nav-link active" href="/writing/" data-astro-cid-ctg3m53h> 글 </a><a class="nav-link" href="/projects/" data-astro-cid-ctg3m53h> 프로젝트 </a><a class="nav-link" href="/about/" data-astro-cid-ctg3m53h> 소개 </a> <a class="nav-link github" href="https://github.com/hangokudao" rel="noreferrer" target="_blank" data-astro-cid-ctg3m53h>
+GitHub
+</a> </nav> </div> </header> <main id="content" class="site-main">  <article class="post-shell narrow" data-astro-cid-gjtny2mx> <header class="post-header" data-astro-cid-gjtny2mx> <p class="eyebrow" data-astro-cid-gjtny2mx>에이전트 워크플로</p> <h1 data-astro-cid-gjtny2mx>에이전트 훅은 자동화가 아니라 사고방지 장치다</h1> <p class="description" data-astro-cid-gjtny2mx>AI agent 작업에서 hook을 어디에 써야 하는지, AGENTS.md나 Skill과 어떻게 나눠야 하는지, 위험 작업을 막는 가드레일로 설계할 때의 기준을 정리한다.</p> <div class="post-meta" data-astro-cid-gjtny2mx> <time datetime="2026-06-11T00:00:00.000Z" data-astro-cid-gjtny2mx>2026년 6월 11일</time> <span data-astro-cid-gjtny2mx>6분 읽기</span> <span data-astro-cid-gjtny2mx>AI Agent First Setup · 5편</span> </div> <ul class="tag-list" aria-label="Tags" data-astro-cid-gjtny2mx> <li data-astro-cid-gjtny2mx> <a href="/writing/tag/ai-agent/" data-astro-cid-gjtny2mx>#ai-agent</a> </li><li data-astro-cid-gjtny2mx> <a href="/writing/tag/codex/" data-astro-cid-gjtny2mx>#codex</a> </li><li data-astro-cid-gjtny2mx> <a href="/writing/tag/hooks/" data-astro-cid-gjtny2mx>#hooks</a> </li><li data-astro-cid-gjtny2mx> <a href="/writing/tag/workflow/" data-astro-cid-gjtny2mx>#workflow</a> </li><li data-astro-cid-gjtny2mx> <a href="/writing/tag/safety/" data-astro-cid-gjtny2mx>#safety</a> </li> </ul> </header> <aside class="post-summary" aria-labelledby="post-summary-title" data-astro-cid-gjtny2mx> <h2 id="post-summary-title" data-astro-cid-gjtny2mx>이 글에서 다루는 것</h2> <ul data-astro-cid-gjtny2mx> <li data-astro-cid-gjtny2mx>Hook은 에이전트가 특정 이벤트를 지날 때 실행되는 검사 지점이며, 사고를 줄이는 가드레일에 가깝다.</li><li data-astro-cid-gjtny2mx>AGENTS.md와 Skill은 에이전트가 참고하는 기준이고, hook은 도구 호출이나 작업 종료 같은 순간에 실제 검사를 붙인다.</li><li data-astro-cid-gjtny2mx>좋은 hook은 모든 것을 자동화하지 않고, 되돌리기 어려운 작업을 멈추거나 검토해야 할 정보를 드러낸다.</li> </ul> </aside> <div class="post-content" data-astro-cid-gjtny2mx> <p><a href="/writing/6/what-is-mcp/">앞 글</a>에서는 MCP를 AI에게 외부 도구와 자료를 연결하는 통로로 정리했다.</p>
+<p>그다음에 헷갈리는 말이 hook이다.</p>
+<p>처음에는 hook도 자동화처럼 보인다. 어떤 시점에 스크립트를 붙이고, 조건에 맞으면 무언가 실행한다. 그래서 “에이전트가 알아서 더 많이 하게 만드는 장치”처럼 느끼기 쉽다.</p>
+<p>나는 지금 hook을 반대로 본다.</p>
+<blockquote>
+<p>Hook은 에이전트에게 더 많은 일을 시키는 장치가 아니라, 위험한 순간에 멈추게 하는 사고방지 장치다.</p>
+</blockquote>
+<p>이 글은 AI agent 작업에서 hook을 어디에 두면 좋은지 정리한다. 특히 <code>AGENTS.md</code>, Skill, permission, CI와 역할을 섞지 않고, “무엇을 막고, 무엇을 알리고, 무엇을 기록할지”로 나눠 본다.</p>
+<h2 id="훅은-특정-순간에-붙는-검사다">훅은 특정 순간에 붙는 검사다</h2>
+<p>Hook은 말 그대로 어떤 흐름의 특정 지점에 걸어두는 동작이다.</p>
+<p>Codex 기준으로 보면 hook은 에이전트 루프 안에 사용자가 만든 스크립트를 끼워 넣는 확장 지점이다. 예를 들어 사용자 프롬프트가 제출될 때, 도구 사용 전후, 승인 요청 직전, 대화가 끝나려는 시점, compact 전후 같은 이벤트에 붙을 수 있다.</p>
+<p>중요한 점은 hook이 일반 지시문과 다르다는 것이다.</p>
+<p><code>AGENTS.md</code>는 에이전트가 읽고 따라야 할 repo 기준이다. “새 글은 <code>draft: true</code>로 시작한다”, “<code>dist/</code>는 직접 수정하지 않는다”, “push와 deploy는 확인 후 한다” 같은 기준이 여기에 맞다.</p>
+<p>Skill은 특정 반복 작업의 절차다. 글 검수, git 변경 분리, UI 확인, 배포 준비처럼 “이 작업을 할 때는 이 순서로 본다”에 가깝다.</p>
+<p>Hook은 더 기계적이다. 특정 이벤트가 발생했을 때 실제 스크립트를 실행한다. 예를 들어 Bash 명령을 실행하기 전에 명령 문자열을 검사하거나, 작업 종료 직전에 검증 명령을 빼먹었는지 확인하거나, prompt 안에 secret처럼 보이는 문자열이 들어왔는지 확인할 수 있다.</p>
+<p>그래서 hook은 “기억해 줘”보다 “이 순간에는 확인해”에 가깝다.</p>
+<h2 id="사고는-보통-경계에서-난다">사고는 보통 경계에서 난다</h2>
+<p>에이전트 작업에서 사고가 나는 지점은 대개 비슷하다.</p>
+<p>파일을 읽는 것과 바꾸는 것의 경계. 로컬 commit과 remote push의 경계. 초안 작성과 공개 발행의 경계. 단순 명령 실행과 삭제, 권한 변경, 배포, production 접근의 경계.</p>
+<p>프롬프트나 <code>AGENTS.md</code>는 이 경계를 설명할 수 있다. 하지만 설명만으로는 매번 충분하지 않다. 긴 세션에서 context가 길어지고, 사용자가 짧게 “그냥 배포해줘”라고 말하고, 에이전트가 앞 단계 검증을 이미 했다고 착각하면 사고가 난다.</p>
+<p>이때 hook이 맡을 수 있는 역할은 명확하다.</p>
+<ul>
+<li>위험한 명령을 실행하기 전에 멈춘다.</li>
+<li>승인이 필요한 작업인지 다시 분류한다.</li>
+<li>작업이 끝나기 전에 빠진 검증을 알려준다.</li>
+<li>공개하면 안 되는 문자열이나 내부 경로를 발견하면 경고한다.</li>
+<li>에이전트가 보고한 “완료”와 실제 git 상태가 맞는지 확인한다.</li>
+</ul>
+<p>여기서 핵심은 hook이 에이전트의 판단을 대체하지 않는다는 점이다. Hook은 판단해야 할 순간을 더 또렷하게 만든다. 사람이나 에이전트가 놓치기 쉬운 경계를 기계적으로 다시 보여준다.</p>
+<h2 id="어떤-훅이-사고를-줄이는가">어떤 훅이 사고를 줄이는가</h2>
+<p>내가 hook을 설계한다면 먼저 세 종류로 나눈다.</p>
+<p>첫째, 실행 전 차단이다.</p>
+<p>대표적으로 <code>PreToolUse</code> 같은 이벤트가 여기에 맞다. 에이전트가 Bash, 파일 수정, MCP tool 같은 도구를 쓰기 전에 입력을 검사한다. 삭제, 대량 overwrite, secret 파일 접근, public remote push처럼 위험한 패턴을 발견하면 실행 전에 막는다.</p>
+<p>이 방식은 사고방지 효과가 크다. 이미 실행된 명령을 되돌리는 것보다 실행 전 멈추는 편이 낫기 때문이다.</p>
+<p>둘째, 승인 요청 보강이다.</p>
+<p>승인이 필요한 명령 앞에서 “이 요청은 왜 위험한가”를 더 잘 설명하게 만들 수 있다. 예를 들어 단순 build와 public deploy는 같은 shell 명령처럼 보여도 영향 범위가 다르다. Hook은 approval prompt가 올라오기 전에 작업 종류, 대상 remote, branch, 되돌림 경로를 검사할 수 있다.</p>
+<p>셋째, 종료 전 검증이다.</p>
+<p>작업이 끝났다고 말하기 전에 <code>git status</code>, <code>git diff --check</code>, test/build 결과, 공개 URL 확인 같은 항목이 빠졌는지 본다. 특히 에이전트는 “수정했다”와 “검증됐다”를 혼동할 수 있다. 종료 시점 hook은 이 둘을 나누는 데 도움이 된다.</p>
+<p>이 세 가지를 한 문장으로 줄이면 이렇다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>실행 전에는 막고, 승인 전에는 설명하고, 종료 전에는 검증한다.</span></span></code></pre>
+<p>이 정도면 hook의 첫 목적은 충분하다.</p>
+<h2 id="훅은-완전한-보안-경계가-아니다">훅은 완전한 보안 경계가 아니다</h2>
+<p>여기서 조심해야 할 점이 있다.</p>
+<p>Hook을 만들었다고 모든 위험이 사라지는 것은 아니다. Codex 공식 문서도 <code>PreToolUse</code>를 가드레일로 설명하면서, 모든 작업 경로를 완전히 가로채는 강제 경계로 보지는 않는다. 지원되는 tool call을 검사할 수 있지만, 도구 종류나 실행 방식에 따라 빠지는 경로가 있을 수 있다.</p>
+<p><code>PostToolUse</code>도 마찬가지다. 도구 실행 뒤에 문제를 발견할 수는 있지만, 이미 일어난 side effect를 되돌리는 장치는 아니다. 삭제 명령이 이미 실행된 뒤라면 hook이 “문제 있음”을 알려도 파일이 자동으로 돌아오지는 않는다.</p>
+<p>그래서 hook을 보안의 전부로 보면 위험하다.</p>
+<p>더 강한 경계가 필요하면 permission, sandbox, branch protection, CI, protected environment, 리뷰 요구, 별도 배포 스크립트를 같이 봐야 한다. Hook은 그중 하나의 층이다.</p>
+<p>나는 이렇게 나눠서 보는 편이 가장 안전하다고 본다.</p>
+<ul>
+<li><code>AGENTS.md</code>: repo에서 항상 지켜야 할 기준을 적는다.</li>
+<li>Skill: 특정 반복 작업의 절차를 묶는다.</li>
+<li>Hook: 도구 사용 전후, prompt 제출, 작업 종료 같은 이벤트에 검사를 붙인다.</li>
+<li>Permission/sandbox: 에이전트가 할 수 있는 작업 범위를 제한한다.</li>
+<li>CI/branch protection: remote에 들어가기 전 마지막 공개 경계를 둔다.</li>
+<li>배포 스크립트: 정해진 경로로만 배포하게 만든다.</li>
+</ul>
+<p>Hook은 중요한 층이지만, 혼자서 모든 것을 막지는 않는다.</p>
+<h2 id="좋은-훅은-작고-설명-가능하다">좋은 훅은 작고 설명 가능하다</h2>
+<p>Hook을 만들 때 가장 위험한 유혹은 “좋아 보이는 자동화”를 계속 붙이는 것이다.</p>
+<p>예를 들어 작업이 끝날 때마다 자동으로 commit하고 push하고 deploy하게 만들 수도 있다. 하지만 이건 사고방지와 거리가 멀다. 오히려 되돌리기 어려운 작업을 사람의 확인 밖으로 밀어낼 수 있다.</p>
+<p>또 하나 봐야 할 점은 hook 자체도 실행 코드라는 것이다. Codex는 관리되지 않는 command hook을 실행하기 전에 사용자가 현재 hook 정의를 검토하고 신뢰하도록 요구한다. 이 흐름은 귀찮은 절차가 아니라 안전 장치다. Hook이 사고를 막는다고 해도, 신뢰하지 않은 hook을 조용히 실행하면 그 hook 자체가 새로운 사고 지점이 된다.</p>
+<p>좋은 hook은 작다.</p>
+<p>예를 들어 이런 기준이 낫다.</p>
+<ul>
+<li><code>rm -rf</code>, <code>git reset --hard</code>, 대량 삭제, 권한 변경은 실행 전 멈춘다.</li>
+<li><code>git push</code>는 remote, branch, commit hash를 보여주고 별도 확인을 요구한다.</li>
+<li>public deploy 전에는 source commit이 private remote에 반영됐는지 확인한다.</li>
+<li><code>.env</code>, key, token, private repo명처럼 보이는 문자열이 공개 글에 들어오면 경고한다.</li>
+<li>완료 보고 전에는 검증 명령을 실제로 실행했는지 확인한다.</li>
+</ul>
+<p>이런 hook은 화려하지 않다. 대신 실패 모드가 분명하다. 무엇을 막는지, 왜 막는지, 사람이 어떻게 풀 수 있는지 설명할 수 있다.</p>
+<p>반대로 나쁜 hook은 넓고 조용하다. 언제 실행되는지 모르고, 실패했을 때 이유가 불분명하고, 자동으로 상태를 바꾸며, 사람이 검토할 정보를 줄여버린다. 이런 hook은 안전 장치가 아니라 숨은 자동화가 된다.</p>
+<h2 id="처음에는-경고만으로도-충분하다">처음에는 경고만으로도 충분하다</h2>
+<p>처음부터 강하게 막는 hook을 만들 필요는 없다.</p>
+<p>처음에는 warning만 남겨도 얻는 것이 많다. 어떤 명령이 자주 위험 경계에 닿는지, 어떤 작업에서 검증을 빼먹는지, 어떤 문구가 공개 안전성 문제를 만드는지 볼 수 있기 때문이다.</p>
+<p>내가 권하는 순서는 이렇다.</p>
+<ol>
+<li>자주 반복되는 사고 후보를 적는다.</li>
+<li>그 사고가 어느 이벤트에서 잡히는지 본다.</li>
+<li>처음에는 경고로 시작한다.</li>
+<li>false positive를 줄인다.</li>
+<li>되돌리기 어려운 작업만 차단으로 올린다.</li>
+</ol>
+<p>예를 들어 “public repo에 source 파일이 올라가면 안 된다”는 사고 후보가 있다고 하자. 처음에는 deploy 전 tree에 금지 경로가 있는지 경고만 할 수 있다. 그다음 실제 배포 경로에서 통과해야 하는 검사로 올린다. 마지막으로 direct push까지 막아야 한다면 pre-push hook, branch protection, 배포 스크립트 검사를 함께 둔다.</p>
+<p>이 순서가 중요한 이유는 간단하다. 너무 넓은 차단은 작업을 멈추게 만들고, 사람은 결국 우회 방법을 찾는다. 작게 시작해서 실제 실패 모드에 맞춘 hook만 남기는 편이 오래 간다.</p>
+<h2 id="내가-훅을-쓸-때의-기준">내가 훅을 쓸 때의 기준</h2>
+<p>지금 내 기준은 이렇다.</p>
+<ul>
+<li>위험 작업 앞에 둔다. 삭제, overwrite, push, deploy, credential 접근처럼 되돌리기 어려운 순간이 우선이다.</li>
+<li>검증 가능한 조건만 둔다. “좋은 글인지 확인”보다 “공개 글에 내부 경로가 있는지 확인”이 hook에 맞다.</li>
+<li>자동 수정보다 중단과 설명을 우선한다. 특히 git, 배포, secret 관련 작업은 자동 해결보다 사람이 볼 정보를 주는 편이 낫다.</li>
+<li>실패 메시지는 사람이 행동할 수 있게 쓴다. “blocked”보다 “public remote push는 배포 스크립트를 사용하라”가 낫다.</li>
+<li>Hook을 마지막 방어선으로 보지 않는다. permission, CI, branch protection, deploy script와 같이 둔다.</li>
+</ul>
+<p>Hook은 에이전트를 더 자율적으로 만들기 위한 장치가 아니다. 오히려 자율성이 위험해지는 지점에서 속도를 낮추는 장치다.</p>
+<p>그래서 나는 hook을 붙일 때마다 이렇게 묻는다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>이 hook이 없으면 어떤 사고가 날 수 있나?</span></span>
+<span class="line"><span>그 사고는 실행 전, 승인 전, 종료 전 중 어디서 가장 잘 잡히나?</span></span>
+<span class="line"><span>막아야 하나, 경고해야 하나, 기록만 하면 되나?</span></span>
+<span class="line"><span>사람이 우회해야 할 때 이유와 대체 경로가 보이나?</span></span></code></pre>
+<p>이 질문에 답하지 못하면 아직 hook으로 만들 때가 아니다.</p>
+<h2 id="결론">결론</h2>
+<p>에이전트 작업에서 hook은 편리한 자동화 장치처럼 보인다.</p>
+<p>하지만 실제로 오래 쓰려면 사고방지 장치로 보는 편이 낫다. <code>AGENTS.md</code>가 기준을 남기고, Skill이 반복 절차를 묶고, permission과 CI가 강한 경계를 만든다면, hook은 그 사이의 특정 순간에서 “잠깐, 이거 확인했나?”라고 멈추게 한다.</p>
+<p>좋은 hook은 많은 일을 하지 않는다. 위험한 일을 조용히 통과시키지 않는다. 사람에게 필요한 정보를 보여주고, 되돌리기 어려운 작업 앞에서 속도를 낮춘다.</p>
+<p>AI agent를 실무 작업에 붙일수록 중요한 것은 더 빠른 자동화가 아니라 더 선명한 경계다. Hook은 그 경계를 기계적으로 다시 확인하게 만드는 작은 장치다.</p>
+<p>다음에 hook을 만들 일이 생기면 기능 목록부터 쓰지 말고, 사고 목록부터 쓰는 편이 낫다.</p>
+<h2 id="참고">참고</h2>
+<ul>
+<li>OpenAI Developers, <a href="https://developers.openai.com/codex/hooks">Hooks</a></li>
+<li>OpenAI Developers, <a href="https://developers.openai.com/codex/permissions">Permissions</a></li>
+<li>OpenAI Developers, <a href="https://developers.openai.com/codex/rules">Rules</a></li>
+<li>이전 글, <a href="/writing/3/what-are-codex-skills/">Codex Skill은 무엇인가: AGENTS.md와 어떻게 다를까</a></li>
+<li>이전 글, <a href="/writing/6/what-is-mcp/">MCP는 무엇인가: AI에게 도구를 연결하는 표준</a></li>
+</ul> </div> <section class="dynamic-blog" data-dynamic-blog data-api-base data-post-id="7" data-canonical-path="/writing/7/agent-hooks-safety-rails/" data-turnstile-site-key hidden aria-labelledby="dynamic-blog-title" data-astro-cid-xt6jigyi> <div class="dynamic-status-row" data-astro-cid-xt6jigyi> <div data-astro-cid-xt6jigyi> <h2 id="dynamic-blog-title" data-astro-cid-xt6jigyi>반응</h2> <p class="dynamic-intro" data-astro-cid-xt6jigyi>댓글은 제출 즉시 공개되며, 작성 때 정한 비밀번호로 삭제할 수 있습니다.</p> </div> <div class="dynamic-meta" aria-label="글 반응 요약" data-astro-cid-xt6jigyi> <span data-comment-count hidden data-astro-cid-xt6jigyi></span> <span data-view-count hidden data-astro-cid-xt6jigyi></span> </div> </div> <p class="dynamic-status" data-dynamic-status role="status" aria-live="polite" data-astro-cid-xt6jigyi>댓글을 불러오는 중입니다.</p> <div class="comment-list" data-comment-list hidden data-astro-cid-xt6jigyi></div> <form class="comment-delete-panel" data-delete-form hidden aria-labelledby="comment-delete-title" data-astro-cid-xt6jigyi> <div class="delete-panel-copy" data-astro-cid-xt6jigyi> <p id="comment-delete-title" class="delete-panel-title" data-delete-label data-astro-cid-xt6jigyi>댓글을 삭제합니다.</p> <p class="delete-panel-note" data-astro-cid-xt6jigyi>댓글 작성 때 입력한 삭제 비밀번호가 필요합니다.</p> </div> <label data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>삭제 비밀번호</span> <input name="deletePassword" type="password" autocomplete="current-password" minlength="4" maxlength="120" required data-astro-cid-xt6jigyi> </label> <div class="delete-panel-footer" data-astro-cid-xt6jigyi> <p data-delete-status role="status" aria-live="polite" data-astro-cid-xt6jigyi></p> <div class="delete-actions" data-astro-cid-xt6jigyi> <button type="submit" data-astro-cid-xt6jigyi>삭제</button> <button type="button" data-cancel-delete data-astro-cid-xt6jigyi>취소</button> </div> </div> </form> <form class="comment-form" data-comment-form data-astro-cid-xt6jigyi> <input type="hidden" name="parentId" data-parent-id data-astro-cid-xt6jigyi> <p class="comment-form-note" data-astro-cid-xt6jigyi>이름과 댓글은 공개됩니다. 삭제 비밀번호는 화면에 보이지 않습니다.</p> <div class="reply-target" data-reply-target hidden data-astro-cid-xt6jigyi> <span data-reply-label role="status" aria-live="polite" data-astro-cid-xt6jigyi></span> <button type="button" data-clear-reply data-astro-cid-xt6jigyi>답글 취소</button> </div> <label class="comment-field" data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>이름</span> <input name="authorName" type="text" autocomplete="name" maxlength="80" required data-astro-cid-xt6jigyi> </label> <label class="comment-field" data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>댓글</span> <textarea name="body" rows="5" minlength="2" maxlength="4000" required aria-describedby="comment-body-help" data-astro-cid-xt6jigyi></textarea> <span id="comment-body-help" class="field-help" data-astro-cid-xt6jigyi>제출하면 승인 대기 없이 바로 공개됩니다.</span> </label> <label class="comment-field" data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>삭제 비밀번호</span> <input name="deletePassword" type="password" autocomplete="new-password" minlength="4" maxlength="120" required aria-describedby="comment-password-help" data-astro-cid-xt6jigyi> <span id="comment-password-help" class="field-help" data-astro-cid-xt6jigyi>나중에 이 댓글을 직접 삭제할 때만 사용합니다.</span> </label> <div class="turnstile-field" data-astro-cid-xt6jigyi> <span class="turnstile-label" data-astro-cid-xt6jigyi>보안 확인</span> <div class="turnstile-slot" data-turnstile-slot data-astro-cid-xt6jigyi></div> <p class="field-help" data-astro-cid-xt6jigyi>확인이 끝나면 댓글을 제출할 수 있습니다.</p> </div> <div class="form-actions" data-astro-cid-xt6jigyi> <p data-form-status role="status" aria-live="polite" data-astro-cid-xt6jigyi>댓글은 제출 즉시 공개됩니다.</p> <button type="submit" data-astro-cid-xt6jigyi>댓글 남기기</button> </div> </form> </section> <script>
+  const getKstDay = () => {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Seoul',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(new Date());
+    const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+    return `${values.year}-${values.month}-${values.day}`;
+  };
+
+  const joinEndpoint = (base, path) => `${base.replace(/\/$/, '')}${path}`;
+
+  const formatViewCount = (value) => {
+    if (!Number.isFinite(value) || value < 0) return '';
+    return `조회 집계 ${value.toLocaleString('ko-KR')}회`;
+  };
+
+  const countComments = (comments) => {
+    if (!Array.isArray(comments)) return 0;
+    return comments.reduce((total, comment) => total + 1 + countComments(comment.replies), 0);
+  };
+
+  const formatCommentCount = (value) => {
+    if (!Number.isFinite(value) || value < 0) return '';
+    return `댓글 ${value.toLocaleString('ko-KR')}개`;
+  };
+
+  const safeLocalStorage = {
+    get: (key) => {
+      try {
+        return window.localStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    },
+    set: (key, value) => {
+      try {
+        window.localStorage.setItem(key, value);
+      } catch {}
+    },
+  };
+
+  const createElement = (tag, className, text) => {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text) element.textContent = text;
+    return element;
+  };
+
+  const renderComments = (container, comments, depth = 0) => {
+    for (const comment of comments) {
+      const authorName = comment.authorName || '익명';
+      const article = createElement('article', depth > 0 ? 'comment-item comment-item--reply' : 'comment-item');
+      article.style.setProperty('--reply-depth', String(Math.min(depth, 6)));
+      article.dataset.commentId = comment.id;
+      article.setAttribute('aria-label', depth > 0 ? `${authorName}의 답글` : `${authorName}의 댓글`);
+
+      const header = createElement('header', 'comment-header');
+      const createdAt = new Date(comment.createdAt);
+      const time = createElement('time', '', createdAt.toLocaleDateString('ko-KR'));
+      if (!Number.isNaN(createdAt.getTime())) {
+        time.dateTime = createdAt.toISOString();
+        time.title = createdAt.toLocaleString('ko-KR');
+      }
+      header.append(createElement('strong', '', authorName), time);
+
+      const body = createElement('p', 'comment-body', comment.body);
+      const actions = createElement('div', 'comment-actions');
+      const replyButton = createElement('button', 'comment-reply', '답글');
+      replyButton.type = 'button';
+      replyButton.dataset.replyTo = comment.id;
+      replyButton.dataset.replyAuthor = authorName;
+      const deleteButton = createElement('button', 'comment-delete', '삭제');
+      deleteButton.type = 'button';
+      deleteButton.dataset.deleteFor = comment.id;
+      deleteButton.dataset.deleteAuthor = authorName;
+      actions.append(replyButton, deleteButton);
+
+      article.append(header, body, actions);
+
+      container.append(article);
+
+      if (Array.isArray(comment.replies) && comment.replies.length > 0) {
+        renderComments(container, comment.replies, depth + 1);
+      }
+    }
+  };
+
+  const setStatus = (element, text, hidden = false) => {
+    element.textContent = text;
+    element.hidden = hidden;
+  };
+
+  const initTurnstile = (root, siteKey) =>
+    new Promise((resolve) => {
+      if (!siteKey) {
+        resolve({ getToken: () => '', reset: () => {} });
+        return;
+      }
+
+      const slot = root.querySelector('[data-turnstile-slot]');
+      let token = '';
+      const render = () => {
+        if (!window.turnstile || !slot) {
+          resolve({ getToken: () => token, reset: () => {} });
+          return;
+        }
+
+        const widgetId = window.turnstile.render(slot, {
+          sitekey: siteKey,
+          theme: 'auto',
+          size: 'flexible',
+          callback: (value) => {
+            token = value;
+          },
+          'expired-callback': () => {
+            token = '';
+          },
+          'error-callback': () => {
+            token = '';
+          },
+        });
+
+        resolve({
+          getToken: () => token,
+          reset: () => {
+            token = '';
+            window.turnstile?.reset(widgetId);
+          },
+        });
+      };
+
+      if (window.turnstile) {
+        render();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.defer = true;
+      script.addEventListener('load', render, { once: true });
+      script.addEventListener('error', () => resolve({ getToken: () => '', reset: () => {} }), { once: true });
+      document.head.append(script);
+    });
+
+  const initDynamicBlog = async (root) => {
+    const apiBase = root.dataset.apiBase;
+    const postId = Number(root.dataset.postId);
+    const canonicalPath = root.dataset.canonicalPath;
+    const siteKey = root.dataset.turnstileSiteKey;
+
+    if (!apiBase || !Number.isInteger(postId) || !canonicalPath) {
+      root.hidden = true;
+      return;
+    }
+
+    const viewCount = root.querySelector('[data-view-count]');
+    const commentCount = root.querySelector('[data-comment-count]');
+    const status = root.querySelector('[data-dynamic-status]');
+    const list = root.querySelector('[data-comment-list]');
+    const form = root.querySelector('[data-comment-form]');
+    const formStatus = root.querySelector('[data-form-status]');
+    const parentInput = root.querySelector('[data-parent-id]');
+    const replyTarget = root.querySelector('[data-reply-target]');
+    const replyLabel = root.querySelector('[data-reply-label]');
+    const clearReply = root.querySelector('[data-clear-reply]');
+    const deleteForm = root.querySelector('[data-delete-form]');
+    const deletePasswordInput = deleteForm.querySelector('input[name="deletePassword"]');
+    const deleteLabel = root.querySelector('[data-delete-label]');
+    const deleteStatus = root.querySelector('[data-delete-status]');
+    const cancelDelete = root.querySelector('[data-cancel-delete]');
+    const turnstile = await initTurnstile(root, siteKey);
+    let deleteCommentId = '';
+
+    if (!siteKey) {
+      const submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = '제출 비활성화';
+      setStatus(formStatus, '댓글 제출은 Turnstile 설정 후 사용할 수 있습니다.');
+    }
+
+    const refreshPublicData = async () => {
+      const response = await fetch(joinEndpoint(apiBase, `/post-public-data?postId=${postId}`), {
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!response.ok) throw new Error('public data failed');
+
+      const data = await response.json();
+      const comments = Array.isArray(data.comments) ? data.comments : [];
+      const viewLabel = formatViewCount(data.viewCount);
+      const commentLabel = Array.isArray(data.comments) ? formatCommentCount(countComments(comments)) : '';
+      viewCount.textContent = viewLabel;
+      viewCount.hidden = !viewLabel;
+      commentCount.textContent = commentLabel;
+      commentCount.hidden = !commentLabel;
+      list.replaceChildren();
+
+      if (comments.length > 0) {
+        renderComments(list, comments);
+        list.hidden = false;
+        setStatus(status, '', true);
+      } else {
+        list.hidden = true;
+        setStatus(status, '아직 댓글이 없습니다. 첫 댓글은 제출하면 바로 공개됩니다.');
+      }
+    };
+
+    const pageviewKey = `blog-pageview:${postId}:${getKstDay()}`;
+
+    if (!safeLocalStorage.get(pageviewKey)) {
+      fetch(joinEndpoint(apiBase, '/pageview'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          postId,
+          canonicalPath,
+          clientNonce: crypto.randomUUID?.() ?? String(Date.now()),
+        }),
+      })
+        .then(async (response) => {
+          if (!response.ok) return;
+          safeLocalStorage.set(pageviewKey, '1');
+          const data = await response.json();
+          const viewLabel = formatViewCount(data.viewCount);
+          if (viewLabel) {
+            viewCount.textContent = viewLabel;
+            viewCount.hidden = false;
+          }
+        })
+        .catch(() => {});
+    }
+
+    try {
+      await refreshPublicData();
+    } catch {
+      setStatus(status, '반응 영역을 지금 불러오지 못했습니다.');
+    }
+
+    list.addEventListener('click', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target) return;
+
+      const replyButton = target.closest('[data-reply-to]');
+      const deleteButton = target.closest('[data-delete-for]');
+
+      if (replyButton) {
+        parentInput.value = replyButton.dataset.replyTo;
+        replyLabel.textContent = `답글 작성 중: ${replyButton.dataset.replyAuthor}`;
+        replyTarget.hidden = false;
+        form.querySelector('textarea').focus();
+        return;
+      }
+
+      if (!deleteButton) return;
+      deleteCommentId = deleteButton.dataset.deleteFor;
+      deleteLabel.textContent = `${deleteButton.dataset.deleteAuthor}의 댓글을 삭제합니다.`;
+      deletePasswordInput.value = '';
+      deleteStatus.textContent = '삭제 비밀번호를 입력해 주세요.';
+      deleteForm.hidden = false;
+      deletePasswordInput.focus();
+    });
+
+    cancelDelete.addEventListener('click', () => {
+      deleteCommentId = '';
+      deletePasswordInput.value = '';
+      deleteStatus.textContent = '';
+      deleteForm.hidden = true;
+    });
+
+    deleteForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const deletePassword = deletePasswordInput.value.trim();
+
+      if (!deleteCommentId || deletePassword.length < 4) {
+        deleteStatus.textContent = '삭제 비밀번호를 입력해 주세요.';
+        return;
+      }
+
+      const submitButton = deleteForm.querySelector('button[type="submit"]');
+      const submitLabel = submitButton.textContent;
+      submitButton.disabled = true;
+      deleteForm.setAttribute('aria-busy', 'true');
+      submitButton.textContent = '삭제 중...';
+      deleteStatus.textContent = '삭제 중입니다.';
+
+      try {
+        const response = await fetch(joinEndpoint(apiBase, '/comments/delete'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            commentId: deleteCommentId,
+            deletePassword,
+          }),
+        });
+
+        if (!response.ok) {
+          if (response.status === 403) {
+            deleteStatus.textContent = '삭제 비밀번호가 맞지 않습니다.';
+            return;
+          }
+
+          throw new Error('comment delete failed');
+        }
+
+        deleteCommentId = '';
+        deletePasswordInput.value = '';
+        deleteForm.hidden = true;
+        await refreshPublicData();
+        setStatus(status, '댓글을 삭제했습니다.');
+      } catch {
+        deleteStatus.textContent = '댓글을 삭제하지 못했습니다. 잠시 뒤 다시 시도해 주세요.';
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = submitLabel;
+        deleteForm.removeAttribute('aria-busy');
+      }
+    });
+
+    clearReply.addEventListener('click', () => {
+      parentInput.value = '';
+      replyTarget.hidden = true;
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const token = turnstile.getToken();
+
+      if (!token) {
+        setStatus(formStatus, '보안 확인을 마친 뒤 제출할 수 있습니다.');
+        return;
+      }
+
+      const submitButton = form.querySelector('button[type="submit"]');
+      const submitLabel = submitButton.textContent;
+      submitButton.disabled = true;
+      form.setAttribute('aria-busy', 'true');
+      submitButton.textContent = '접수 중...';
+      setStatus(formStatus, '접수 중입니다.');
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(joinEndpoint(apiBase, '/comments'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            postId,
+            authorName: String(formData.get('authorName') ?? ''),
+            body: String(formData.get('body') ?? ''),
+            deletePassword: String(formData.get('deletePassword') ?? ''),
+            parentId: parentInput.value || null,
+            turnstileToken: token,
+          }),
+        });
+
+        if (!response.ok) throw new Error('comment submit failed');
+
+        form.reset();
+        parentInput.value = '';
+        replyTarget.hidden = true;
+        turnstile.reset();
+        await refreshPublicData();
+        setStatus(formStatus, '댓글이 공개됐습니다.');
+      } catch {
+        setStatus(formStatus, '댓글을 접수하지 못했습니다. 잠시 뒤 다시 시도해 주세요.');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = submitLabel;
+        form.removeAttribute('aria-busy');
+      }
+    });
+  };
+
+  for (const root of document.querySelectorAll('[data-dynamic-blog]')) {
+    initDynamicBlog(root);
+  }
+</script> <section class="related-posts" aria-labelledby="related-posts-title" data-astro-cid-gjtny2mx> <div class="related-heading" data-astro-cid-gjtny2mx> <p class="eyebrow" data-astro-cid-gjtny2mx>Related writing</p> <h2 id="related-posts-title" data-astro-cid-gjtny2mx>이어 읽을 글</h2> </div> <div class="related-list" data-astro-cid-gjtny2mx> <a href="/writing/6/what-is-mcp/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>에이전트 워크플로</span> <strong data-astro-cid-gjtny2mx>MCP는 무엇인가: AI에게 도구를 연결하는 표준</strong> <small data-astro-cid-gjtny2mx>MCP를 처음 듣는 사람을 위해 Model Context Protocol이 왜 나왔고, host, client, server, tool, resource를 어떻게 이해하면 되는지 초보자 눈높이로 정리한다.</small> </a><a href="/writing/3/what-are-codex-skills/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>에이전트 워크플로</span> <strong data-astro-cid-gjtny2mx>Codex Skill은 무엇인가: AGENTS.md와 어떻게 다를까</strong> <small data-astro-cid-gjtny2mx>Codex Skill을 SKILL.md 중심의 재사용 절차 묶음으로 설명하고, AGENTS.md, 실행 검사(hook), 외부 도구 연결(MCP), 설치 묶음(plugin)과 어떻게 나눠야 하는지 정리한다.</small> </a><a href="/writing/1/repeated-prompts-belong-in-rules/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>에이전트 워크플로</span> <strong data-astro-cid-gjtny2mx>같은 말을 세 번째 붙여넣고 있다면 규칙 파일로 빼야 한다</strong> <small data-astro-cid-gjtny2mx>AI 코딩 에이전트에게 같은 금지 조건을 반복해서 붙여넣던 경험을 바탕으로, 프롬프트와 규칙 파일을 나누는 기준을 정리한다.</small> </a> </div> </section> <nav class="post-neighbors" aria-label="이전 글과 다음 글" data-astro-cid-gjtny2mx> <a href="/writing/6/what-is-mcp/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>이전 글</span> <strong data-astro-cid-gjtny2mx>MCP는 무엇인가: AI에게 도구를 연결하는 표준</strong> </a> <span aria-hidden="true" data-astro-cid-gjtny2mx></span> </nav> </article>  </main> <footer class="site-footer"> <div class="container"> <div> <strong>hangokudao</strong> <span>Codex, Claude Code 등을 사용하며 쌓은 기록과 방법론 이야기</span> </div> <nav aria-label="하단 내비게이션"> <a href="https://github.com/hangokudao" rel="noreferrer" target="_blank">GitHub</a> <a href="/writing/">글</a> <a href="/projects/">프로젝트</a> <a href="/about/">소개</a> </nav> </div> </footer> </div> </body></html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html><html lang="ko"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Codex Skill을 SKILL.md 중심의 재사용 절차 묶음으로 설명하고, AGENTS.md, 실행 검사(hook), 외부 도구 연결(MCP), 설치 묶음(plugin)과 어떻게 나눠야 하는지 정리한다."><link rel="canonical" href="https://hangokudao.github.io/writing/3/what-are-codex-skills/"><link rel="alternate" type="application/rss+xml" title="hangokudao RSS" href="https://hangokudao.github.io/rss.xml"><meta property="og:site_name" content="hangokudao"><meta property="og:title" content="Codex Skill은 무엇인가: AGENTS.md와 어떻게 다를까 | hangokudao"><meta property="og:description" content="Codex Skill을 SKILL.md 중심의 재사용 절차 묶음으로 설명하고, AGENTS.md, 실행 검사(hook), 외부 도구 연결(MCP), 설치 묶음(plugin)과 어떻게 나눠야 하는지 정리한다."><meta property="og:type" content="article"><meta property="og:url" content="https://hangokudao.github.io/writing/3/what-are-codex-skills/"><meta property="og:image" content="https://hangokudao.github.io/assets/blog/what-are-codex-skills/hero-skill-router.png"><meta property="og:image:alt" content="작업 요청이 프롬프트, repo 규칙, Skill, 실행 경계, 외부 도구 연결로 나뉘는 장면"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Codex Skill은 무엇인가: AGENTS.md와 어떻게 다를까 | hangokudao"><meta name="twitter:description" content="Codex Skill을 SKILL.md 중심의 재사용 절차 묶음으로 설명하고, AGENTS.md, 실행 검사(hook), 외부 도구 연결(MCP), 설치 묶음(plugin)과 어떻게 나눠야 하는지 정리한다."><meta name="twitter:image" content="https://hangokudao.github.io/assets/blog/what-are-codex-skills/hero-skill-router.png"><meta name="twitter:image:alt" content="작업 요청이 프롬프트, repo 규칙, Skill, 실행 경계, 외부 도구 연결로 나뉘는 장면"><meta property="article:published_time" content="2026-06-04T00:00:00.000Z"><meta property="article:tag" content="codex"><meta property="article:tag" content="agent-skills"><meta property="article:tag" content="agents-md"><meta property="article:tag" content="workflow"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Codex Skill은 무엇인가: AGENTS.md와 어떻게 다를까","description":"Codex Skill을 SKILL.md 중심의 재사용 절차 묶음으로 설명하고, AGENTS.md, 실행 검사(hook), 외부 도구 연결(MCP), 설치 묶음(plugin)과 어떻게 나눠야 하는지 정리한다.","datePublished":"2026-06-04T00:00:00.000Z","dateModified":"2026-06-08T00:00:00.000Z","author":{"@type":"Person","name":"hangokudao","url":"https://github.com/hangokudao"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://hangokudao.github.io/writing/3/what-are-codex-skills/"},"url":"https://hangokudao.github.io/writing/3/what-are-codex-skills/","keywords":["codex","agent-skills","agents-md","workflow"],"image":["https://hangokudao.github.io/assets/blog/what-are-codex-skills/hero-skill-router.png"]}</script><link rel="icon" href="/favicon.svg" type="image/svg+xml"><title>Codex Skill은 무엇인가: AGENTS.md와 어떻게 다를까 | hangokudao</title><link rel="stylesheet" href="/_astro/_urlSlug_.CbYNetVa.css">
+<link rel="stylesheet" href="/_astro/BaseLayout.F8fUCOQD.css"></head> <body> <div class="site-shell"> <a class="skip-link" href="#content">본문으로 건너뛰기</a> <header class="site-header" data-astro-cid-ctg3m53h> <div class="container header-inner" data-astro-cid-ctg3m53h> <a class="brand" href="/" aria-label="hangokudao 홈" data-astro-cid-ctg3m53h> <strong data-astro-cid-ctg3m53h>hangokudao</strong> <span data-astro-cid-ctg3m53h>AI 에이전트와 함께 성장하기</span> </a> <nav class="nav-links" aria-label="주요 내비게이션" data-astro-cid-ctg3m53h> <a class="nav-link" href="/" data-astro-cid-ctg3m53h> 홈 </a><a class="nav-link active" href="/writing/" data-astro-cid-ctg3m53h> 글 </a><a class="nav-link" href="/projects/" data-astro-cid-ctg3m53h> 프로젝트 </a><a class="nav-link" href="/about/" data-astro-cid-ctg3m53h> 소개 </a> <a class="nav-link github" href="https://github.com/hangokudao" rel="noreferrer" target="_blank" data-astro-cid-ctg3m53h>
+GitHub
+</a> </nav> </div> </header> <main id="content" class="site-main">  <article class="post-shell narrow" data-astro-cid-gjtny2mx> <header class="post-header" data-astro-cid-gjtny2mx> <p class="eyebrow" data-astro-cid-gjtny2mx>에이전트 워크플로</p> <h1 data-astro-cid-gjtny2mx>Codex Skill은 무엇인가: AGENTS.md와 어떻게 다를까</h1> <p class="description" data-astro-cid-gjtny2mx>Codex Skill을 SKILL.md 중심의 재사용 절차 묶음으로 설명하고, AGENTS.md, 실행 검사(hook), 외부 도구 연결(MCP), 설치 묶음(plugin)과 어떻게 나눠야 하는지 정리한다.</p> <div class="post-meta" data-astro-cid-gjtny2mx> <time datetime="2026-06-04T00:00:00.000Z" data-astro-cid-gjtny2mx>2026년 6월 4일</time> <span data-astro-cid-gjtny2mx>6분 읽기</span> <span data-astro-cid-gjtny2mx>AI Agent First Setup · 3편</span> </div> <ul class="tag-list" aria-label="Tags" data-astro-cid-gjtny2mx> <li data-astro-cid-gjtny2mx> <a href="/writing/tag/codex/" data-astro-cid-gjtny2mx>#codex</a> </li><li data-astro-cid-gjtny2mx> <a href="/writing/tag/agent-skills/" data-astro-cid-gjtny2mx>#agent-skills</a> </li><li data-astro-cid-gjtny2mx> <a href="/writing/tag/agents-md/" data-astro-cid-gjtny2mx>#agents-md</a> </li><li data-astro-cid-gjtny2mx> <a href="/writing/tag/workflow/" data-astro-cid-gjtny2mx>#workflow</a> </li> </ul> </header> <aside class="post-summary" aria-labelledby="post-summary-title" data-astro-cid-gjtny2mx> <h2 id="post-summary-title" data-astro-cid-gjtny2mx>이 글에서 다루는 것</h2> <ul data-astro-cid-gjtny2mx> <li data-astro-cid-gjtny2mx>Skill은 SKILL.md를 중심으로 반복 작업 절차를 재사용하게 만드는 작은 묶음이다.</li><li data-astro-cid-gjtny2mx>AGENTS.md는 repo 기본값, Skill은 특정 반복 작업 절차, hook과 CI는 실행 경계로 나눠 본다.</li><li data-astro-cid-gjtny2mx>Skill을 많이 설치하기보다 내가 설명할 수 있는 절차만 작게 남기는 기준을 제안한다.</li> </ul> </aside> <div class="post-content" data-astro-cid-gjtny2mx> <p><a href="/writing/2/karpathy-context-engineering-rules/">앞 글</a>에서는 반복 지시를 컨텍스트로 옮겨야 한다고 정리했다.</p>
+<p>그다음 질문은 이렇다.</p>
+<p><code>AGENTS.md</code>까지 만들었다면, Codex Skill은 왜 필요한가?</p>
+<p>답은 <code>AGENTS.md</code>가 부족해서가 아니다. 역할이 다르기 때문이다. <code>AGENTS.md</code>는 repo에서 항상 지켜야 할 기본값을 둔다. 새 글은 <code>draft: true</code>로 시작한다, <code>dist/</code>를 직접 수정하지 않는다, push나 deploy는 확인 전 하지 않는다는 식이다.</p>
+<p>Skill은 더 좁다. 특정 작업을 반복할 때 다시 쓰는 절차 묶음이다. 예를 들어 “Codex 기능 글을 쓸 때 공식 문서와 개인 경험을 분리한다”, “commit 전 변경 파일을 분리해서 본다”, “UI 작업 전 모바일과 데스크톱 확인 기준을 잡는다” 같은 일에 맞다.</p>
+<p>이 글은 Skill을 <code>SKILL.md</code> 중심의 재사용 절차로 설명하고, 어떤 기준은 프롬프트(prompt), <code>AGENTS.md</code>, 실행 검사(hook), CI, 외부 도구 연결(MCP), 설치 묶음(plugin) 쪽에 남겨야 하는지 나눠 본다.</p>
+<p><img src="/assets/blog/what-are-codex-skills/hero-skill-router.png" alt="작업 요청이 프롬프트, repo 규칙, Skill, 실행 경계, 외부 도구 연결로 나뉘는 장면."></p>
+<p>핵심은 모든 반복 기준을 한곳에 모으지 않는 것이다. 이번 한 번이면 프롬프트(prompt), repo 전체 기본값이면 <code>AGENTS.md</code>, 특정 작업에서 반복되는 절차면 Skill, 반드시 막아야 하면 권한(permission), CI, branch protection, hook 같은 실행 장치를 본다.</p>
+<h2 id="반복-비용이-skill-후보가-된다">반복 비용이 Skill 후보가 된다</h2>
+<p>Skill 후보는 그럴듯한 주제에서 나오지 않는다. 같은 일을 세 번쯤 반복했는데 매번 빠지는 단계가 보이면 그때 후보가 된다.</p>
+<p>예를 들어 “공식 문서 확인”, “변경 파일 분리”, “모바일 화면 확인”, “발행 전 공개 안전성 점검”은 한 번의 취향이 아니다. 특정 작업을 할 때 반복해서 필요한 절차다. 이런 절차를 매번 프롬프트에 붙이면 언젠가 빠진다.</p>
+<p>여기서 바로 Skill을 만들 필요는 없다. 먼저 “이번 한 번의 요청인가, repo 전체 기본값인가, 특정 작업에서만 반복되는 절차인가”를 나눠보면 된다. 이 구분이 잡히면 프롬프트에는 이번 요청의 목표가 남고, <code>AGENTS.md</code>에는 repo 기본값이 남고, Skill에는 특정 작업을 다시 할 때 필요한 순서가 남는다.</p>
+<p>내가 이 구분을 신경 쓰게 된 이유도 비슷하다. 처음에는 “공식 문서 확인”, “git 변경 분리”, “블로그 공개 안전성 점검”을 전부 프롬프트에 붙였다. 그러다 보니 어떤 기준은 repo 전체 규칙처럼 굳어졌고, 어떤 기준은 Codex 글을 쓸 때만 필요했고, 어떤 기준은 실제 차단 장치가 필요한 위험 작업이었다. 이 셋을 같은 칸에 넣으면 <code>AGENTS.md</code>도 길어지고, Skill도 만능 체크리스트처럼 부풀었다.</p>
+<h2 id="공식-문서에서-말하는-skill">공식 문서에서 말하는 Skill</h2>
+<p>이 정의가 필요했던 이유는 거창한 기능 이름을 외우기 위해서가 아니다. 내가 매번 프롬프트에 붙이던 반복 절차를 어디에 둘지 정해야 했기 때문이다.</p>
+<p><a href="https://developers.openai.com/codex/skills">OpenAI Codex의 Agent Skills 문서</a>는 Skill을 반복 가능한 workflow를 위한 재사용 capability로 설명한다. 보통 <code>SKILL.md</code>가 중심이고, 필요하면 <code>scripts/</code>, <code>references/</code>, <code>assets/</code> 같은 보조 파일을 함께 둔다.</p>
+<p>중요한 점은 Skill이 “프롬프트 묶음”이 아니라는 것이다. Skill은 에이전트가 특정 작업을 할 때 어떤 순서로 판단하고, 어떤 자료를 읽고, 어떤 검증을 해야 하는지 묶어두는 작업 절차에 가깝다.</p>
+<p>공식 문서에서 특히 중요한 점은 progressive disclosure다. 한국어로 풀면 “필요할 때만 자세히 읽기”에 가깝다. Codex는 먼저 Skill의 이름, 설명, 경로 같은 metadata를 보고, 해당 Skill이 선택됐을 때 <code>SKILL.md</code>를 읽고, reference 문서나 script는 필요할 때만 본다.</p>
+<p>내가 지금 이해하는 정의는 이렇다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Skill은 SKILL.md를 중심으로 반복 작업 절차를 묶어두고,</span></span>
+<span class="line"><span>필요할 때만 references, scripts, assets를 더 읽게 하는 작은 작업 절차 패키지(workflow package)다.</span></span></code></pre>
+<h2 id="agentsmd와-skill은-역할이-다르다">AGENTS.md와 Skill은 역할이 다르다</h2>
+<p>둘 다 에이전트에게 지시를 주는 파일처럼 보인다. 그래서 처음에는 헷갈린다.</p>
+<p>나는 지금 이렇게 나눠서 본다.</p>
+<ul>
+<li>프롬프트(prompt)는 이번 요청의 목표와 예외다. “이 글은 초안까지만 만들어줘” 같은 말이 여기에 가깝다.</li>
+<li><code>AGENTS.md</code>는 repo에서 항상 지켜야 할 기본값이다. “새 글은 <code>draft: true</code>로 시작한다” 같은 기준은 매번 프롬프트에 붙일 일이 아니다.</li>
+<li>Skill은 특정 작업을 반복할 때 쓰는 절차다. “OpenAI 공식 문서를 확인한 뒤 Codex 설명을 작성한다”처럼 작업 종류가 맞을 때만 꺼내 쓰는 쪽에 가깝다.</li>
+<li>Permission, CI, branch protection은 실제 차단이나 공개 전 검증 장치다. 위험 명령 승인, push 차단, lint, type check처럼 문서가 아니라 실행 경계가 필요한 일에 맞다.</li>
+<li>Hook은 특정 이벤트에서 실행되는 검사 장치다. 예를 들어 tool call 전 확인이나 작업 종료 시 검증처럼 정해진 시점에 붙는다.</li>
+<li>MCP server는 외부 도구와 맥락을 연결하는 통로다. 문서 서버, GitHub, Figma처럼 현재 상태(live context)가 필요할 때 본다.</li>
+<li>App이나 Connector는 인증된 앱 통합이다. 보통 설치 가능한 묶음(plugin)이 제공하며, 계정 기반 문서, 저장소, 업무 도구 연결처럼 권한이 붙은 외부 맥락에 가깝다.</li>
+</ul>
+<p>내 블로그 작업으로 가져오면 더 단순하다. “이번 글은 짧게”는 프롬프트다. “새 글은 <code>draft: true</code>”는 <code>AGENTS.md</code>다. “Codex 글을 쓸 때 공식 문서와 개인 경험을 분리한다”는 Skill 후보다. “승인 전 push를 막는다”는 문서만으로 끝낼 일이 아니라 hook이나 permission까지 같이 볼 문제다.</p>
+<p><code>AGENTS.md</code>는 repo의 운영 기준이다. 작업 전 어디를 봐야 하는지, 어떤 명령으로 검증해야 하는지, 무엇을 하면 안 되는지처럼 반복되는 기본값을 둔다. Codex에서는 global, project, 현재 작업 경로에 가까운 instruction이 층을 이루기 때문에, 가까운 파일일수록 더 구체적인 기준이 될 수 있다.</p>
+<p>Skill은 더 좁다. 작업 종류가 맞을 때만 꺼내 쓰는 workflow다. 공식 문서 확인, git 안전 점검, UI 디자인 기준, 긴 글 편집, 릴리스 점검처럼 “이 일을 할 때는 항상 이 순서가 필요하다” 싶은 것에 맞다.</p>
+<p>그래서 Skill은 <code>AGENTS.md</code>를 대체하지 않는다. 오히려 <code>AGENTS.md</code>를 너무 길게 만들지 않기 위해 필요한 분리 단위에 가깝다.</p>
+<p><img src="/assets/blog/what-are-codex-skills/body-agents-skill-boundary.png" alt="repo 전체 기본값과 특정 반복 절차가 서로 다른 층에 놓인 구조."></p>
+<h2 id="skill-후보는-세-가지-질문으로-걸러낸다">Skill 후보는 세 가지 질문으로 걸러낸다</h2>
+<p>Skill로 만들 만한 일에는 공통점이 있다. 같은 작업을 여러 번 반복하고, 매번 빠뜨리면 안 되는 단계가 있으며, 참고해야 할 문서나 검증 명령이 있다. 한 번의 프롬프트보다 길지만 모든 작업에 항상 필요한 규칙은 아닐 때 Skill 후보가 된다.</p>
+<p>나는 세 가지 질문으로 나눠 본다.</p>
+<ul>
+<li>오늘 한 번만 필요한가. 그렇다면 프롬프트에 둔다.</li>
+<li>이 repo에서 항상 지켜야 하는가. 그렇다면 <code>AGENTS.md</code>에 둔다.</li>
+<li>특정 작업에서 반복되는 절차인가. 그렇다면 Skill 후보로 본다.</li>
+</ul>
+<p>예를 들어 “Codex 기능 설명을 블로그 글로 쓴다”는 작업은 Skill에 잘 맞는다. 공식 문서 확인, 개인 경험과 공식 사실 분리, 출처 표기, 공개 안전성 점검이 반복되기 때문이다.</p>
+<p>반대로 “오늘은 리뷰만 하고 수정하지 마”는 프롬프트다. “이 repo에서는 <code>dist/</code>를 직접 수정하지 않는다”는 <code>AGENTS.md</code>다. “<code>draft: false</code> 변경이나 push를 실제로 막는다”는 Skill만으로는 부족하고, 권한(permission), CI, branch protection, hook 같은 실행 경계를 봐야 한다.</p>
+<p>잘못 배치하면 비용이 생긴다. 한 번짜리 취향을 <code>AGENTS.md</code>에 넣으면 repo 기본값이 오염된다. 실제 차단이 필요한 일을 Skill에만 맡기면 문서상 기준은 있어도 실행 경계가 비어 있다. 외부 시스템 접근이 필요하지 않은데 MCP부터 붙이면 검토해야 할 권한과 실패 지점만 늘어난다.</p>
+<h2 id="늘릴-때는-설치보다-설명-가능성을-본다">늘릴 때는 설치보다 설명 가능성을 본다</h2>
+<p>처음에는 공개 repo에서 좋아 보이는 Skill을 많이 가져오면 에이전트가 더 잘 일할 것처럼 보인다. 실제로는 반대 문제가 먼저 생긴다.</p>
+<p>어떤 Skill이 언제 불리는지 내가 설명하지 못하면, 결과가 좋아져도 왜 좋아졌는지 알 수 없다. 반대로 결과가 이상해졌을 때도 어떤 기준이 개입했는지 추적하기 어렵다.</p>
+<p>OpenAI 문서 기준으로도 Skill 자동 호출은 <code>name</code>, <code>description</code>, 경로 같은 metadata에서 시작한다. Skill이 많거나 설명이 겹치면 어떤 절차가 작동했는지 사람이 따라가기 어려워진다. 많이 설치하는 것 자체가 곧 품질이 되지는 않는다.</p>
+<p>가져오기 전에 최소한 아래는 봐야 한다.</p>
+<ul>
+<li>이 Skill은 어떤 상황에서 호출되어야 하는가.</li>
+<li>description만 봐도 trigger와 제외 조건이 분명한가.</li>
+<li>내 repo의 <code>AGENTS.md</code>와 충돌하지 않는가.</li>
+<li>파일 삭제, push, deploy, credential 접근 같은 위험 작업을 직접 하라고 시키지 않는가.</li>
+<li>script가 있다면 무엇을 실행하는지 이해할 수 있는가.</li>
+</ul>
+<p>특히 script가 붙은 Skill은 더 보수적으로 봐야 한다. instruction-only Skill은 잘못돼도 대개 지시 품질 문제로 끝난다. 하지만 script는 실제 파일, 명령, 외부 시스템 접근으로 이어질 수 있다. 그래서 “좋아 보인다”보다 “무엇을 하는지 설명할 수 있다”가 먼저다.</p>
+<h2 id="직접-만들-때는-작게-시작한다">직접 만들 때는 작게 시작한다</h2>
+<p>Skill을 직접 만들 때도 처음부터 크게 만들 필요가 없다.</p>
+<p>처음에는 <code>SKILL.md</code> 하나면 충분하다.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#79B8FF;font-weight:bold">---</span></span>
+<span class="line"><span style="color:#E1E4E8">name: blog-source-check</span></span>
+<span class="line"><span style="color:#E1E4E8">description: 블로그 글에서 공식 사실과 개인 경험을 분리해야 할 때 사용한다.</span></span>
+<span class="line"><span style="color:#79B8FF;font-weight:bold">---</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">1.</span><span style="color:#E1E4E8"> 글의 핵심 주장을 목록으로 뽑는다.</span></span>
+<span class="line"><span style="color:#FFAB70">2.</span><span style="color:#E1E4E8"> 각 주장을 공식 문서, 개인 경험, 추정으로 분류한다.</span></span>
+<span class="line"><span style="color:#FFAB70">3.</span><span style="color:#E1E4E8"> 공식 문서가 필요한 주장은 출처를 확인한다.</span></span>
+<span class="line"><span style="color:#FFAB70">4.</span><span style="color:#E1E4E8"> 확인하지 못한 문장은 단정하지 말고 "확인 필요"로 낮춘다.</span></span>
+<span class="line"><span style="color:#FFAB70">5.</span><span style="color:#E1E4E8"> 본문에는 공개하면 안 되는 내부 경로나 비공개 대화 원문을 남기지 않는다.</span></span></code></pre>
+<p>이 정도만 있어도 “이 글 사실성 좀 봐줘”라는 프롬프트보다 낫다. 해야 할 일이 단계로 남고, 다음에도 같은 방식으로 반복할 수 있기 때문이다.</p>
+<p>다만 description은 더 구체적으로 다듬는 편이 좋다. 나쁜 description은 “블로그를 잘 쓰게 한다”처럼 넓다. 좋은 description은 “AI agent 글에서 공식 사실, 개인 경험, 추정을 분리해야 할 때 사용한다. 단순 오탈자 수정에는 사용하지 않는다”처럼 trigger와 제외 조건이 같이 보인다.</p>
+<p>처음부터 scripts를 붙일 필요는 없다. 반복 실행해야 하는 검증 명령이 생기거나, 사람이 매번 똑같이 하는 기계적 작업이 보일 때 붙여도 늦지 않다.</p>
+<p><img src="/assets/blog/what-are-codex-skills/body-small-skill-kit.png" alt="작은 Skill 패키지가 절차 문서, 참고 자료, 실행 도구로 작게 묶인 모습."></p>
+<p>Skill을 많이 갖는 것보다 중요한 건 내가 설명할 수 있는 Skill만 남기는 것이다. 에이전트가 똑똑해지는 느낌보다, 내가 검토할 수 있는 작업 절차가 늘어나는 쪽이 더 믿을 만하다.</p>
+<h2 id="결론">결론</h2>
+<p><code>AGENTS.md</code>를 만들었다고 Skill이 필요 없어지는 것은 아니다.</p>
+<p>둘은 층이 다르다. <code>AGENTS.md</code>는 repo의 기본 운영 기준이다. Skill은 특정 반복 작업을 위한 재사용 절차다. 프롬프트(prompt)는 이번 요청의 목표다. 권한(permission), CI, branch protection은 더 강한 차단과 검증 장치다. Hook은 특정 이벤트에서 위험을 줄이는 실행 검사다. MCP server와 App(Connector)은 외부 시스템을 다루는 통로다.</p>
+<p>이 층을 나누지 않으면 모든 것이 프롬프트로 밀려온다. 그러면 매번 길게 설명하고, 어느 날 한 줄을 빠뜨리고, 나중에는 에이전트가 왜 그렇게 움직였는지 설명하기 어려워진다.</p>
+<p>다음 반복 작업을 만났을 때는 다섯 문장만 물어보면 된다.</p>
+<ul>
+<li>이건 오늘 한 번의 요청인가.</li>
+<li>이 repo에서 항상 지켜야 하는 기본값인가.</li>
+<li>특정 작업에서 세 번 이상 반복한 절차인가.</li>
+<li>실제로 막아야 하는 위험 작업인가.</li>
+<li>내가 읽고 설명할 수 있는 Skill인가.</li>
+</ul>
+<p>Skill은 에이전트를 마법처럼 바꾸는 장치가 아니다. 같은 일을 할 때 같은 실수를 덜 하게 만드는 작은 작업 절차다.</p>
+<p>내가 Skill을 크게 보지 않으려는 이유도 여기에 있다. 설명할 수 없는 자동화보다, 다음 작업에서 빠뜨리지 않을 작은 절차 하나가 더 오래 간다.</p>
+<p>그 정도로 보면 충분하다.</p>
+<p>다음 글에서는 Skill처럼 절차를 묶는 문제에서 한 걸음 더 나가, <a href="/writing/6/what-is-mcp/">MCP가 AI에게 외부 도구와 자료를 연결하는 방식</a>을 초보자 눈높이로 정리한다.</p>
+<h2 id="참고">참고</h2>
+<ul>
+<li>OpenAI Developers, <a href="https://developers.openai.com/codex/skills">Agent Skills</a></li>
+<li>OpenAI Developers, <a href="https://developers.openai.com/codex/concepts/customization#skills">Customization: Skills</a></li>
+<li>OpenAI Developers, <a href="https://developers.openai.com/codex/concepts/customization#agents-guidance">Customization: AGENTS Guidance</a></li>
+<li>OpenAI Developers, <a href="https://developers.openai.com/codex/mcp">Model Context Protocol</a></li>
+<li>OpenAI Developers, <a href="https://developers.openai.com/codex/hooks">Hooks</a></li>
+<li>OpenAI Developers, <a href="https://developers.openai.com/codex/plugins">Plugins</a></li>
+</ul> </div> <section class="dynamic-blog" data-dynamic-blog data-api-base data-post-id="3" data-canonical-path="/writing/3/what-are-codex-skills/" data-turnstile-site-key hidden aria-labelledby="dynamic-blog-title" data-astro-cid-xt6jigyi> <div class="dynamic-status-row" data-astro-cid-xt6jigyi> <div data-astro-cid-xt6jigyi> <h2 id="dynamic-blog-title" data-astro-cid-xt6jigyi>반응</h2> <p class="dynamic-intro" data-astro-cid-xt6jigyi>댓글은 제출 즉시 공개되며, 작성 때 정한 비밀번호로 삭제할 수 있습니다.</p> </div> <div class="dynamic-meta" aria-label="글 반응 요약" data-astro-cid-xt6jigyi> <span data-comment-count hidden data-astro-cid-xt6jigyi></span> <span data-view-count hidden data-astro-cid-xt6jigyi></span> </div> </div> <p class="dynamic-status" data-dynamic-status role="status" aria-live="polite" data-astro-cid-xt6jigyi>댓글을 불러오는 중입니다.</p> <div class="comment-list" data-comment-list hidden data-astro-cid-xt6jigyi></div> <form class="comment-delete-panel" data-delete-form hidden aria-labelledby="comment-delete-title" data-astro-cid-xt6jigyi> <div class="delete-panel-copy" data-astro-cid-xt6jigyi> <p id="comment-delete-title" class="delete-panel-title" data-delete-label data-astro-cid-xt6jigyi>댓글을 삭제합니다.</p> <p class="delete-panel-note" data-astro-cid-xt6jigyi>댓글 작성 때 입력한 삭제 비밀번호가 필요합니다.</p> </div> <label data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>삭제 비밀번호</span> <input name="deletePassword" type="password" autocomplete="current-password" minlength="4" maxlength="120" required data-astro-cid-xt6jigyi> </label> <div class="delete-panel-footer" data-astro-cid-xt6jigyi> <p data-delete-status role="status" aria-live="polite" data-astro-cid-xt6jigyi></p> <div class="delete-actions" data-astro-cid-xt6jigyi> <button type="submit" data-astro-cid-xt6jigyi>삭제</button> <button type="button" data-cancel-delete data-astro-cid-xt6jigyi>취소</button> </div> </div> </form> <form class="comment-form" data-comment-form data-astro-cid-xt6jigyi> <input type="hidden" name="parentId" data-parent-id data-astro-cid-xt6jigyi> <p class="comment-form-note" data-astro-cid-xt6jigyi>이름과 댓글은 공개됩니다. 삭제 비밀번호는 화면에 보이지 않습니다.</p> <div class="reply-target" data-reply-target hidden data-astro-cid-xt6jigyi> <span data-reply-label role="status" aria-live="polite" data-astro-cid-xt6jigyi></span> <button type="button" data-clear-reply data-astro-cid-xt6jigyi>답글 취소</button> </div> <label class="comment-field" data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>이름</span> <input name="authorName" type="text" autocomplete="name" maxlength="80" required data-astro-cid-xt6jigyi> </label> <label class="comment-field" data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>댓글</span> <textarea name="body" rows="5" minlength="2" maxlength="4000" required aria-describedby="comment-body-help" data-astro-cid-xt6jigyi></textarea> <span id="comment-body-help" class="field-help" data-astro-cid-xt6jigyi>제출하면 승인 대기 없이 바로 공개됩니다.</span> </label> <label class="comment-field" data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>삭제 비밀번호</span> <input name="deletePassword" type="password" autocomplete="new-password" minlength="4" maxlength="120" required aria-describedby="comment-password-help" data-astro-cid-xt6jigyi> <span id="comment-password-help" class="field-help" data-astro-cid-xt6jigyi>나중에 이 댓글을 직접 삭제할 때만 사용합니다.</span> </label> <div class="turnstile-field" data-astro-cid-xt6jigyi> <span class="turnstile-label" data-astro-cid-xt6jigyi>보안 확인</span> <div class="turnstile-slot" data-turnstile-slot data-astro-cid-xt6jigyi></div> <p class="field-help" data-astro-cid-xt6jigyi>확인이 끝나면 댓글을 제출할 수 있습니다.</p> </div> <div class="form-actions" data-astro-cid-xt6jigyi> <p data-form-status role="status" aria-live="polite" data-astro-cid-xt6jigyi>댓글은 제출 즉시 공개됩니다.</p> <button type="submit" data-astro-cid-xt6jigyi>댓글 남기기</button> </div> </form> </section> <script>
+  const getKstDay = () => {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Seoul',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(new Date());
+    const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+    return `${values.year}-${values.month}-${values.day}`;
+  };
+
+  const joinEndpoint = (base, path) => `${base.replace(/\/$/, '')}${path}`;
+
+  const formatViewCount = (value) => {
+    if (!Number.isFinite(value) || value < 0) return '';
+    return `조회 집계 ${value.toLocaleString('ko-KR')}회`;
+  };
+
+  const countComments = (comments) => {
+    if (!Array.isArray(comments)) return 0;
+    return comments.reduce((total, comment) => total + 1 + countComments(comment.replies), 0);
+  };
+
+  const formatCommentCount = (value) => {
+    if (!Number.isFinite(value) || value < 0) return '';
+    return `댓글 ${value.toLocaleString('ko-KR')}개`;
+  };
+
+  const safeLocalStorage = {
+    get: (key) => {
+      try {
+        return window.localStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    },
+    set: (key, value) => {
+      try {
+        window.localStorage.setItem(key, value);
+      } catch {}
+    },
+  };
+
+  const createElement = (tag, className, text) => {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text) element.textContent = text;
+    return element;
+  };
+
+  const renderComments = (container, comments, depth = 0) => {
+    for (const comment of comments) {
+      const authorName = comment.authorName || '익명';
+      const article = createElement('article', depth > 0 ? 'comment-item comment-item--reply' : 'comment-item');
+      article.style.setProperty('--reply-depth', String(Math.min(depth, 6)));
+      article.dataset.commentId = comment.id;
+      article.setAttribute('aria-label', depth > 0 ? `${authorName}의 답글` : `${authorName}의 댓글`);
+
+      const header = createElement('header', 'comment-header');
+      const createdAt = new Date(comment.createdAt);
+      const time = createElement('time', '', createdAt.toLocaleDateString('ko-KR'));
+      if (!Number.isNaN(createdAt.getTime())) {
+        time.dateTime = createdAt.toISOString();
+        time.title = createdAt.toLocaleString('ko-KR');
+      }
+      header.append(createElement('strong', '', authorName), time);
+
+      const body = createElement('p', 'comment-body', comment.body);
+      const actions = createElement('div', 'comment-actions');
+      const replyButton = createElement('button', 'comment-reply', '답글');
+      replyButton.type = 'button';
+      replyButton.dataset.replyTo = comment.id;
+      replyButton.dataset.replyAuthor = authorName;
+      const deleteButton = createElement('button', 'comment-delete', '삭제');
+      deleteButton.type = 'button';
+      deleteButton.dataset.deleteFor = comment.id;
+      deleteButton.dataset.deleteAuthor = authorName;
+      actions.append(replyButton, deleteButton);
+
+      article.append(header, body, actions);
+
+      container.append(article);
+
+      if (Array.isArray(comment.replies) && comment.replies.length > 0) {
+        renderComments(container, comment.replies, depth + 1);
+      }
+    }
+  };
+
+  const setStatus = (element, text, hidden = false) => {
+    element.textContent = text;
+    element.hidden = hidden;
+  };
+
+  const initTurnstile = (root, siteKey) =>
+    new Promise((resolve) => {
+      if (!siteKey) {
+        resolve({ getToken: () => '', reset: () => {} });
+        return;
+      }
+
+      const slot = root.querySelector('[data-turnstile-slot]');
+      let token = '';
+      const render = () => {
+        if (!window.turnstile || !slot) {
+          resolve({ getToken: () => token, reset: () => {} });
+          return;
+        }
+
+        const widgetId = window.turnstile.render(slot, {
+          sitekey: siteKey,
+          theme: 'auto',
+          size: 'flexible',
+          callback: (value) => {
+            token = value;
+          },
+          'expired-callback': () => {
+            token = '';
+          },
+          'error-callback': () => {
+            token = '';
+          },
+        });
+
+        resolve({
+          getToken: () => token,
+          reset: () => {
+            token = '';
+            window.turnstile?.reset(widgetId);
+          },
+        });
+      };
+
+      if (window.turnstile) {
+        render();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.defer = true;
+      script.addEventListener('load', render, { once: true });
+      script.addEventListener('error', () => resolve({ getToken: () => '', reset: () => {} }), { once: true });
+      document.head.append(script);
+    });
+
+  const initDynamicBlog = async (root) => {
+    const apiBase = root.dataset.apiBase;
+    const postId = Number(root.dataset.postId);
+    const canonicalPath = root.dataset.canonicalPath;
+    const siteKey = root.dataset.turnstileSiteKey;
+
+    if (!apiBase || !Number.isInteger(postId) || !canonicalPath) {
+      root.hidden = true;
+      return;
+    }
+
+    const viewCount = root.querySelector('[data-view-count]');
+    const commentCount = root.querySelector('[data-comment-count]');
+    const status = root.querySelector('[data-dynamic-status]');
+    const list = root.querySelector('[data-comment-list]');
+    const form = root.querySelector('[data-comment-form]');
+    const formStatus = root.querySelector('[data-form-status]');
+    const parentInput = root.querySelector('[data-parent-id]');
+    const replyTarget = root.querySelector('[data-reply-target]');
+    const replyLabel = root.querySelector('[data-reply-label]');
+    const clearReply = root.querySelector('[data-clear-reply]');
+    const deleteForm = root.querySelector('[data-delete-form]');
+    const deletePasswordInput = deleteForm.querySelector('input[name="deletePassword"]');
+    const deleteLabel = root.querySelector('[data-delete-label]');
+    const deleteStatus = root.querySelector('[data-delete-status]');
+    const cancelDelete = root.querySelector('[data-cancel-delete]');
+    const turnstile = await initTurnstile(root, siteKey);
+    let deleteCommentId = '';
+
+    if (!siteKey) {
+      const submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = '제출 비활성화';
+      setStatus(formStatus, '댓글 제출은 Turnstile 설정 후 사용할 수 있습니다.');
+    }
+
+    const refreshPublicData = async () => {
+      const response = await fetch(joinEndpoint(apiBase, `/post-public-data?postId=${postId}`), {
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!response.ok) throw new Error('public data failed');
+
+      const data = await response.json();
+      const comments = Array.isArray(data.comments) ? data.comments : [];
+      const viewLabel = formatViewCount(data.viewCount);
+      const commentLabel = Array.isArray(data.comments) ? formatCommentCount(countComments(comments)) : '';
+      viewCount.textContent = viewLabel;
+      viewCount.hidden = !viewLabel;
+      commentCount.textContent = commentLabel;
+      commentCount.hidden = !commentLabel;
+      list.replaceChildren();
+
+      if (comments.length > 0) {
+        renderComments(list, comments);
+        list.hidden = false;
+        setStatus(status, '', true);
+      } else {
+        list.hidden = true;
+        setStatus(status, '아직 댓글이 없습니다. 첫 댓글은 제출하면 바로 공개됩니다.');
+      }
+    };
+
+    const pageviewKey = `blog-pageview:${postId}:${getKstDay()}`;
+
+    if (!safeLocalStorage.get(pageviewKey)) {
+      fetch(joinEndpoint(apiBase, '/pageview'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          postId,
+          canonicalPath,
+          clientNonce: crypto.randomUUID?.() ?? String(Date.now()),
+        }),
+      })
+        .then(async (response) => {
+          if (!response.ok) return;
+          safeLocalStorage.set(pageviewKey, '1');
+          const data = await response.json();
+          const viewLabel = formatViewCount(data.viewCount);
+          if (viewLabel) {
+            viewCount.textContent = viewLabel;
+            viewCount.hidden = false;
+          }
+        })
+        .catch(() => {});
+    }
+
+    try {
+      await refreshPublicData();
+    } catch {
+      setStatus(status, '반응 영역을 지금 불러오지 못했습니다.');
+    }
+
+    list.addEventListener('click', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target) return;
+
+      const replyButton = target.closest('[data-reply-to]');
+      const deleteButton = target.closest('[data-delete-for]');
+
+      if (replyButton) {
+        parentInput.value = replyButton.dataset.replyTo;
+        replyLabel.textContent = `답글 작성 중: ${replyButton.dataset.replyAuthor}`;
+        replyTarget.hidden = false;
+        form.querySelector('textarea').focus();
+        return;
+      }
+
+      if (!deleteButton) return;
+      deleteCommentId = deleteButton.dataset.deleteFor;
+      deleteLabel.textContent = `${deleteButton.dataset.deleteAuthor}의 댓글을 삭제합니다.`;
+      deletePasswordInput.value = '';
+      deleteStatus.textContent = '삭제 비밀번호를 입력해 주세요.';
+      deleteForm.hidden = false;
+      deletePasswordInput.focus();
+    });
+
+    cancelDelete.addEventListener('click', () => {
+      deleteCommentId = '';
+      deletePasswordInput.value = '';
+      deleteStatus.textContent = '';
+      deleteForm.hidden = true;
+    });
+
+    deleteForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const deletePassword = deletePasswordInput.value.trim();
+
+      if (!deleteCommentId || deletePassword.length < 4) {
+        deleteStatus.textContent = '삭제 비밀번호를 입력해 주세요.';
+        return;
+      }
+
+      const submitButton = deleteForm.querySelector('button[type="submit"]');
+      const submitLabel = submitButton.textContent;
+      submitButton.disabled = true;
+      deleteForm.setAttribute('aria-busy', 'true');
+      submitButton.textContent = '삭제 중...';
+      deleteStatus.textContent = '삭제 중입니다.';
+
+      try {
+        const response = await fetch(joinEndpoint(apiBase, '/comments/delete'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            commentId: deleteCommentId,
+            deletePassword,
+          }),
+        });
+
+        if (!response.ok) {
+          if (response.status === 403) {
+            deleteStatus.textContent = '삭제 비밀번호가 맞지 않습니다.';
+            return;
+          }
+
+          throw new Error('comment delete failed');
+        }
+
+        deleteCommentId = '';
+        deletePasswordInput.value = '';
+        deleteForm.hidden = true;
+        await refreshPublicData();
+        setStatus(status, '댓글을 삭제했습니다.');
+      } catch {
+        deleteStatus.textContent = '댓글을 삭제하지 못했습니다. 잠시 뒤 다시 시도해 주세요.';
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = submitLabel;
+        deleteForm.removeAttribute('aria-busy');
+      }
+    });
+
+    clearReply.addEventListener('click', () => {
+      parentInput.value = '';
+      replyTarget.hidden = true;
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const token = turnstile.getToken();
+
+      if (!token) {
+        setStatus(formStatus, '보안 확인을 마친 뒤 제출할 수 있습니다.');
+        return;
+      }
+
+      const submitButton = form.querySelector('button[type="submit"]');
+      const submitLabel = submitButton.textContent;
+      submitButton.disabled = true;
+      form.setAttribute('aria-busy', 'true');
+      submitButton.textContent = '접수 중...';
+      setStatus(formStatus, '접수 중입니다.');
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(joinEndpoint(apiBase, '/comments'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            postId,
+            authorName: String(formData.get('authorName') ?? ''),
+            body: String(formData.get('body') ?? ''),
+            deletePassword: String(formData.get('deletePassword') ?? ''),
+            parentId: parentInput.value || null,
+            turnstileToken: token,
+          }),
+        });
+
+        if (!response.ok) throw new Error('comment submit failed');
+
+        form.reset();
+        parentInput.value = '';
+        replyTarget.hidden = true;
+        turnstile.reset();
+        await refreshPublicData();
+        setStatus(formStatus, '댓글이 공개됐습니다.');
+      } catch {
+        setStatus(formStatus, '댓글을 접수하지 못했습니다. 잠시 뒤 다시 시도해 주세요.');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = submitLabel;
+        form.removeAttribute('aria-busy');
+      }
+    });
+  };
+
+  for (const root of document.querySelectorAll('[data-dynamic-blog]')) {
+    initDynamicBlog(root);
+  }
+</script> <section class="related-posts" aria-labelledby="related-posts-title" data-astro-cid-gjtny2mx> <div class="related-heading" data-astro-cid-gjtny2mx> <p class="eyebrow" data-astro-cid-gjtny2mx>Related writing</p> <h2 id="related-posts-title" data-astro-cid-gjtny2mx>이어 읽을 글</h2> </div> <div class="related-list" data-astro-cid-gjtny2mx> <a href="/writing/7/agent-hooks-safety-rails/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>에이전트 워크플로</span> <strong data-astro-cid-gjtny2mx>에이전트 훅은 자동화가 아니라 사고방지 장치다</strong> <small data-astro-cid-gjtny2mx>AI agent 작업에서 hook을 어디에 써야 하는지, AGENTS.md나 Skill과 어떻게 나눠야 하는지, 위험 작업을 막는 가드레일로 설계할 때의 기준을 정리한다.</small> </a><a href="/writing/1/repeated-prompts-belong-in-rules/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>에이전트 워크플로</span> <strong data-astro-cid-gjtny2mx>같은 말을 세 번째 붙여넣고 있다면 규칙 파일로 빼야 한다</strong> <small data-astro-cid-gjtny2mx>AI 코딩 에이전트에게 같은 금지 조건을 반복해서 붙여넣던 경험을 바탕으로, 프롬프트와 규칙 파일을 나누는 기준을 정리한다.</small> </a><a href="/writing/2/karpathy-context-engineering-rules/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>에이전트 워크플로</span> <strong data-astro-cid-gjtny2mx>Karpathy가 말한 컨텍스트 엔지니어링: 규칙 파일 다시 보기</strong> <small data-astro-cid-gjtny2mx>Andrej Karpathy의 Software 2.0, Verifiability, MenuGen 회고를 렌즈로 삼아 AGENTS.md와 CLAUDE.md를 프롬프트 저장소가 아니라 작업 컨텍스트로 보는 기준을 정리한다.</small> </a> </div> </section> <nav class="post-neighbors" aria-label="이전 글과 다음 글" data-astro-cid-gjtny2mx> <a href="/writing/2/karpathy-context-engineering-rules/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>이전 글</span> <strong data-astro-cid-gjtny2mx>Karpathy가 말한 컨텍스트 엔지니어링: 규칙 파일 다시 보기</strong> </a> <a href="/writing/6/what-is-mcp/" class="next-link" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>다음 글</span> <strong data-astro-cid-gjtny2mx>MCP는 무엇인가: AI에게 도구를 연결하는 표준</strong> </a> </nav> </article>  </main> <footer class="site-footer"> <div class="container"> <div> <strong>hangokudao</strong> <span>Codex, Claude Code 등을 사용하며 쌓은 기록과 방법론 이야기</span> </div> <nav aria-label="하단 내비게이션"> <a href="https://github.com/hangokudao" rel="noreferrer" target="_blank">GitHub</a> <a href="/writing/">글</a> <a href="/projects/">프로젝트</a> <a href="/about/">소개</a> </nav> </div> </footer> </div> </body></html>

@@ -1,0 +1,511 @@
+<!DOCTYPE html><html lang="ko"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="MCP를 처음 듣는 사람을 위해 Model Context Protocol이 왜 나왔고, host, client, server, tool, resource를 어떻게 이해하면 되는지 초보자 눈높이로 정리한다."><link rel="canonical" href="https://hangokudao.github.io/writing/6/what-is-mcp/"><link rel="alternate" type="application/rss+xml" title="hangokudao RSS" href="https://hangokudao.github.io/rss.xml"><meta property="og:site_name" content="hangokudao"><meta property="og:title" content="MCP는 무엇인가: AI에게 도구를 연결하는 표준 | hangokudao"><meta property="og:description" content="MCP를 처음 듣는 사람을 위해 Model Context Protocol이 왜 나왔고, host, client, server, tool, resource를 어떻게 이해하면 되는지 초보자 눈높이로 정리한다."><meta property="og:type" content="article"><meta property="og:url" content="https://hangokudao.github.io/writing/6/what-is-mcp/"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="MCP는 무엇인가: AI에게 도구를 연결하는 표준 | hangokudao"><meta name="twitter:description" content="MCP를 처음 듣는 사람을 위해 Model Context Protocol이 왜 나왔고, host, client, server, tool, resource를 어떻게 이해하면 되는지 초보자 눈높이로 정리한다."><meta property="article:published_time" content="2026-06-10T00:00:00.000Z"><meta property="article:tag" content="ai-agent"><meta property="article:tag" content="mcp"><meta property="article:tag" content="context-engineering"><meta property="article:tag" content="workflow"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"MCP는 무엇인가: AI에게 도구를 연결하는 표준","description":"MCP를 처음 듣는 사람을 위해 Model Context Protocol이 왜 나왔고, host, client, server, tool, resource를 어떻게 이해하면 되는지 초보자 눈높이로 정리한다.","datePublished":"2026-06-10T00:00:00.000Z","dateModified":"2026-06-10T00:00:00.000Z","author":{"@type":"Person","name":"hangokudao","url":"https://github.com/hangokudao"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://hangokudao.github.io/writing/6/what-is-mcp/"},"url":"https://hangokudao.github.io/writing/6/what-is-mcp/","keywords":["ai-agent","mcp","context-engineering","workflow"]}</script><link rel="icon" href="/favicon.svg" type="image/svg+xml"><title>MCP는 무엇인가: AI에게 도구를 연결하는 표준 | hangokudao</title><link rel="stylesheet" href="/_astro/_urlSlug_.CbYNetVa.css">
+<link rel="stylesheet" href="/_astro/BaseLayout.F8fUCOQD.css"></head> <body> <div class="site-shell"> <a class="skip-link" href="#content">본문으로 건너뛰기</a> <header class="site-header" data-astro-cid-ctg3m53h> <div class="container header-inner" data-astro-cid-ctg3m53h> <a class="brand" href="/" aria-label="hangokudao 홈" data-astro-cid-ctg3m53h> <strong data-astro-cid-ctg3m53h>hangokudao</strong> <span data-astro-cid-ctg3m53h>AI 에이전트와 함께 성장하기</span> </a> <nav class="nav-links" aria-label="주요 내비게이션" data-astro-cid-ctg3m53h> <a class="nav-link" href="/" data-astro-cid-ctg3m53h> 홈 </a><a class="nav-link active" href="/writing/" data-astro-cid-ctg3m53h> 글 </a><a class="nav-link" href="/projects/" data-astro-cid-ctg3m53h> 프로젝트 </a><a class="nav-link" href="/about/" data-astro-cid-ctg3m53h> 소개 </a> <a class="nav-link github" href="https://github.com/hangokudao" rel="noreferrer" target="_blank" data-astro-cid-ctg3m53h>
+GitHub
+</a> </nav> </div> </header> <main id="content" class="site-main">  <article class="post-shell narrow" data-astro-cid-gjtny2mx> <header class="post-header" data-astro-cid-gjtny2mx> <p class="eyebrow" data-astro-cid-gjtny2mx>에이전트 워크플로</p> <h1 data-astro-cid-gjtny2mx>MCP는 무엇인가: AI에게 도구를 연결하는 표준</h1> <p class="description" data-astro-cid-gjtny2mx>MCP를 처음 듣는 사람을 위해 Model Context Protocol이 왜 나왔고, host, client, server, tool, resource를 어떻게 이해하면 되는지 초보자 눈높이로 정리한다.</p> <div class="post-meta" data-astro-cid-gjtny2mx> <time datetime="2026-06-10T00:00:00.000Z" data-astro-cid-gjtny2mx>2026년 6월 10일</time> <span data-astro-cid-gjtny2mx>7분 읽기</span> <span data-astro-cid-gjtny2mx>AI Agent First Setup · 4편</span> </div> <ul class="tag-list" aria-label="Tags" data-astro-cid-gjtny2mx> <li data-astro-cid-gjtny2mx> <a href="/writing/tag/ai-agent/" data-astro-cid-gjtny2mx>#ai-agent</a> </li><li data-astro-cid-gjtny2mx> <a href="/writing/tag/mcp/" data-astro-cid-gjtny2mx>#mcp</a> </li><li data-astro-cid-gjtny2mx> <a href="/writing/tag/context-engineering/" data-astro-cid-gjtny2mx>#context-engineering</a> </li><li data-astro-cid-gjtny2mx> <a href="/writing/tag/workflow/" data-astro-cid-gjtny2mx>#workflow</a> </li> </ul> </header> <aside class="post-summary" aria-labelledby="post-summary-title" data-astro-cid-gjtny2mx> <h2 id="post-summary-title" data-astro-cid-gjtny2mx>이 글에서 다루는 것</h2> <ul data-astro-cid-gjtny2mx> <li data-astro-cid-gjtny2mx>MCP는 AI 앱이 외부 도구와 자료를 공통 방식으로 연결하기 위한 표준이다.</li><li data-astro-cid-gjtny2mx>초보자는 host, client, server, tool, resource만 먼저 구분해도 MCP 흐름을 따라갈 수 있다.</li><li data-astro-cid-gjtny2mx>MCP는 편리하지만 보안 장치가 아니므로 trusted server, 승인, 권한 범위, 로그 검토를 같이 봐야 한다.</li> </ul> </aside> <div class="post-content" data-astro-cid-gjtny2mx> <p><a href="/writing/3/what-are-codex-skills/">앞 글</a>에서는 Skill을 반복 작업 절차로 봤다. 그 글 끝에서 MCP라는 말을 잠깐 지나갔다.</p>
+<p>처음 보면 MCP도 Skill, plugin, connector, API 같은 말과 섞여 보인다. 그래서 더 어렵게 느껴진다. 하지만 처음부터 protocol 세부 구현을 볼 필요는 없다.</p>
+<p>나는 MCP를 이렇게 이해하는 편이 가장 쉬웠다.</p>
+<blockquote>
+<p>AI가 혼자 알고 있는 것만으로 답하지 않고, 필요할 때 외부 도구와 자료에 정해진 방식으로 연결되는 통로.</p>
+</blockquote>
+<p>이 글은 MCP를 처음 듣는 사람을 위한 정리다. 서버를 직접 만드는 법보다, 왜 필요한지, 어떤 단어만 먼저 알면 되는지, 어디서 조심해야 하는지를 본다.</p>
+<h2 id="ai는-기본적으로-내-파일과-앱을-모른다">AI는 기본적으로 내 파일과 앱을 모른다</h2>
+<p>AI에게 “내 캘린더 보고 내일 일정 정리해줘”라고 말해도, AI가 자동으로 내 캘린더를 볼 수 있는 것은 아니다.</p>
+<p>“이 저장소의 issue를 보고 우선순위를 정리해줘”라고 말해도, AI가 자동으로 GitHub 권한을 갖는 것도 아니다. 모델은 대화에 들어온 텍스트와 연결된 도구가 돌려준 결과를 보고 판단한다.</p>
+<p>그래서 AI 앱에는 연결 통로가 필요하다.</p>
+<p>예전 방식은 서비스마다 따로 붙이는 쪽에 가까웠다. 어떤 AI 앱은 Google Drive 연결을 따로 만들고, 어떤 앱은 GitHub 연결을 따로 만들고, 또 다른 앱은 내부 DB 연결을 따로 만든다. 이렇게 되면 같은 일을 하려 해도 앱마다 연결 방식과 권한 관리가 달라진다.</p>
+<p>MCP(Model Context Protocol)는 이 문제를 줄이기 위해 나온 표준이다. 공식 MCP 문서는 MCP를 AI 애플리케이션에 context를 제공하는 공개 표준으로 설명한다. 여기서 context는 모델이 판단할 때 볼 수 있는 자료, 도구, 상태를 뜻한다.</p>
+<p>쉽게 말하면 MCP는 “AI 앱과 외부 도구가 서로 알아들을 수 있게 맞춘 약속”이다.</p>
+<h2 id="비유하면-충전기-규격에-가깝다">비유하면 충전기 규격에 가깝다</h2>
+<p>MCP를 처음 설명할 때 나는 충전기 규격 비유가 꽤 도움이 된다고 본다.</p>
+<p>예전에는 기기마다 충전 단자가 달랐다. 충전기는 많지만 서로 맞지 않았다. 표준 단자가 생기면 모든 문제가 사라지는 것은 아니지만, 최소한 “어떻게 꽂을지”부터 매번 새로 만들 필요는 줄어든다.</p>
+<p>MCP도 비슷하다.</p>
+<p>AI 앱은 “어떤 도구가 있니”, “이 도구는 어떤 입력을 받니”, “이 자료를 읽을 수 있니”라고 물을 수 있다. MCP server는 “나는 이런 tool과 resource를 제공한다”라고 답한다. 둘 사이의 약속이 맞으면 AI 앱은 그 도구를 사용할 후보로 볼 수 있다.</p>
+<p>이 비유에서 중요한 점은 표준이 곧 안전을 뜻하지 않는다는 것이다.</p>
+<p>충전기 단자가 맞아도 불량 충전기를 꽂으면 위험하다. MCP도 마찬가지다. 연결 방식이 표준화됐다는 말은 아무 server나 믿어도 된다는 뜻이 아니다.</p>
+<h2 id="먼저-알아둘-단어-다섯-개">먼저 알아둘 단어 다섯 개</h2>
+<p>MCP를 처음 볼 때는 다섯 단어만 먼저 보면 된다.</p>
+<p>첫째, host다.</p>
+<p>Host는 사용자가 실제로 쓰는 AI 앱이다. 예를 들어 데스크톱 AI 앱, 코딩 에이전트, IDE 확장, ChatGPT 같은 표면이 여기에 가깝다. 사용자의 요청을 받고, 어떤 MCP server를 연결할지 관리한다.</p>
+<p>둘째, client다.</p>
+<p>Client는 host 안에서 MCP server와 말하는 작은 연결 담당이라고 보면 된다. 사용자가 직접 client를 볼 일은 많지 않다. 중요한 것은 host가 server와 직접 아무 말이나 하는 것이 아니라, client를 통해 정해진 MCP 방식으로 주고받는다는 점이다.</p>
+<p>셋째, server다.</p>
+<p>Server는 외부 도구나 자료를 MCP 방식으로 내보내는 쪽이다. 예를 들어 파일 검색, 일정 조회, GitHub issue 확인, 데이터베이스 조회 같은 기능을 server가 제공할 수 있다.</p>
+<p>넷째, tool이다.</p>
+<p>Tool은 AI가 실행할 수 있는 동작이다. “파일을 검색한다”, “issue를 읽는다”, “캘린더 일정을 찾는다”, “테스트를 실행한다” 같은 일이 tool에 가깝다. Tool은 대개 입력을 받고 결과를 돌려준다.</p>
+<p>다섯째, resource다.</p>
+<p>Resource는 AI가 읽을 수 있는 자료다. 문서, 파일 내용, 스키마, 설정 정보처럼 “실행”보다 “읽기”에 가까운 context다.</p>
+<p>이렇게 보면 MCP 흐름은 단순해진다.</p>
+<p>사용자 요청은 AI 앱(host)으로 들어간다. Host 안의 MCP client가 MCP server와 말하고, server는 tool을 실행하거나 resource를 돌려준다. 그 결과가 다시 AI의 context로 들어온다.</p>
+<p>초보자에게는 이 정도면 충분하다. transport, JSON-RPC, schema 같은 말은 나중에 server를 직접 만들 때 봐도 늦지 않다.</p>
+<h2 id="mcp가-있으면-무엇이-달라질까">MCP가 있으면 무엇이 달라질까</h2>
+<p>MCP가 필요한 이유는 AI가 더 “똑똑해져서”가 아니다. AI가 봐야 할 현재 자료와 실행할 도구를 더 일관된 방식으로 연결하기 위해서다.</p>
+<p>예를 들어 AI가 내 프로젝트 문서를 읽고 답하게 만들고 싶다고 해보자. 그냥 프롬프트에 문서를 붙여 넣을 수도 있다. 하지만 문서가 많아지면 매번 붙여 넣을 수 없다. MCP server가 문서 검색 resource를 제공하면, AI 앱은 필요한 문서를 찾아 context로 가져올 수 있다.</p>
+<p>또 다른 예로 GitHub issue를 정리한다고 해보자. AI에게 issue 목록을 복사해서 붙이면 한 번은 된다. 하지만 issue가 바뀌면 다시 복사해야 한다. MCP server가 issue 조회 tool을 제공하면, AI는 현재 issue를 읽고 요약할 수 있다.</p>
+<p>OpenAI API 문서도 connectors와 remote MCP servers를 외부 서비스에 연결하고 필요한 경우 모델이 도구를 사용할 수 있게 하는 방식으로 설명한다. 이때 도구 호출은 자동으로 허용할 수도 있고, 개발자가 명시 승인 흐름을 요구하게 만들 수도 있다.</p>
+<p>여기서 핵심은 “현재성”과 “행동 가능성”이다.</p>
+<ul>
+<li>현재성: 모델이 학습 때 알던 정보가 아니라 지금 server가 돌려준 자료를 볼 수 있다.</li>
+<li>행동 가능성: 단순 답변이 아니라 정해진 tool을 호출해 조회나 작업을 할 수 있다.</li>
+<li>재사용성: 앱마다 새 통합을 만들기보다 MCP 방식으로 server를 연결할 수 있다.</li>
+</ul>
+<p>그래서 MCP는 AI agent가 실제 작업 환경에 들어올수록 중요해진다. 프롬프트만으로는 현재 파일, 현재 일정, 현재 issue, 현재 DB 상태를 안정적으로 다루기 어렵기 때문이다.</p>
+<h2 id="mcp는-skill이나-agentsmd와-다르다">MCP는 Skill이나 AGENTS.md와 다르다</h2>
+<p>이 블로그의 앞 글들을 읽었다면 <code>AGENTS.md</code>, Skill, MCP가 다 비슷하게 보일 수 있다. 모두 AI가 더 잘 일하게 돕는 장치처럼 보이기 때문이다.</p>
+<p>하지만 역할은 다르다.</p>
+<p><code>AGENTS.md</code>는 repo에서 항상 지켜야 할 기본 지시다. 예를 들어 “build 산출물은 직접 수정하지 않는다”, “push와 deploy는 확인 후 진행한다” 같은 기준을 둔다.</p>
+<p>Skill은 특정 반복 작업의 절차다. 예를 들어 “발행 전 안전성을 점검한다”, “git 변경을 분리해서 commit한다”처럼 작업 종류가 맞을 때 꺼내 쓰는 workflow에 가깝다.</p>
+<p>MCP는 외부 context와 tool을 연결하는 통로다. AI가 혼자 갖고 있지 않은 자료를 읽거나, 외부 서비스의 기능을 호출해야 할 때 쓴다.</p>
+<p>나는 이렇게 나눠서 기억한다.</p>
+<ul>
+<li>프롬프트: 이번 요청의 목표</li>
+<li><code>AGENTS.md</code>: repo의 기본 운영 기준</li>
+<li>Skill: 반복 작업 절차</li>
+<li>MCP: 외부 도구와 자료를 연결하는 표준 통로</li>
+<li>Hook, permission, CI: 실제로 막거나 검증하는 실행 경계</li>
+</ul>
+<p>이 구분을 해두면 MCP를 과하게 기대하지 않게 된다. MCP server를 붙인다고 글을 잘 쓰는 기준이 생기지는 않는다. 그건 <code>AGENTS.md</code>나 Skill, 검수 기준 쪽 문제다. 반대로 <code>AGENTS.md</code>를 아무리 잘 써도 AI가 내 캘린더나 GitHub issue를 자동으로 볼 수는 없다. 그건 connector나 MCP server가 필요한 영역이다.</p>
+<h2 id="가장-조심할-것은-보안이다">가장 조심할 것은 보안이다</h2>
+<p>MCP는 편리하지만, 초보자가 가장 먼저 봐야 할 것은 보안이다.</p>
+<p>MCP server는 AI에게 tool과 resource를 제공한다. 이 말은 server가 모델의 context에 들어온 정보를 받을 수 있고, 어떤 경우에는 외부 서비스에서 행동을 할 수도 있다는 뜻이다.</p>
+<p>OpenAI 문서는 remote MCP server를 신뢰할 수 있어야 하며, 악의적인 server가 모델 context에 들어온 민감한 정보를 빼낼 수 있다고 경고한다. MCP 공식 보안 가이드도 authorization, token handling, prompt injection, tool permission 같은 항목을 별도로 다룬다. 연결이 쉬워진 만큼, 설계와 운영에서 보안 기준을 같이 잡아야 한다는 뜻이다.</p>
+<p>초보자는 아래 네 가지를 먼저 기억하면 된다.</p>
+<ul>
+<li>공식 또는 신뢰할 수 있는 server부터 쓴다.</li>
+<li>처음에는 읽기 권한만 주고, 쓰기나 삭제 tool은 나중에 연다.</li>
+<li>민감한 tool은 승인 없이 실행되지 않게 한다.</li>
+<li>어떤 데이터가 server로 나가는지 로그와 화면에서 확인한다.</li>
+</ul>
+<p>특히 “승인 없이 실행”은 조심해야 한다. 캘린더를 읽는 것과 일정을 삭제하는 것은 위험도가 다르다. 문서를 검색하는 것과 외부로 전송하는 것도 다르다. MCP를 붙일 때는 “이 server가 무엇을 할 수 있는가”를 먼저 봐야 한다.</p>
+<p>나는 MCP를 켤 때 아래 질문을 먼저 던지는 편이 낫다고 본다.</p>
+<ul>
+<li>이 server가 읽을 수 있는 것은 무엇인가?</li>
+<li>이 server가 바꿀 수 있는 것은 무엇인가?</li>
+<li>내가 승인해야 하는 action은 무엇인가?</li>
+<li>실수했을 때 되돌릴 수 있는가?</li>
+</ul>
+<p>이 질문에 답하지 못하면 아직 자동 실행으로 넘길 단계가 아니다.</p>
+<h2 id="언제-mcp를-써볼-만한가">언제 MCP를 써볼 만한가</h2>
+<p>MCP가 항상 필요한 것은 아니다.</p>
+<p>한 번 읽고 끝낼 짧은 문서는 프롬프트에 붙여 넣는 편이 더 단순하다. repo 안의 반복 규칙은 <code>AGENTS.md</code>가 더 낫다. 자주 반복하는 작업 순서는 Skill이 더 맞을 수 있다.</p>
+<p>MCP는 외부의 현재 상태가 필요할 때 쓸 만하다.</p>
+<ul>
+<li>문서 저장소에서 최신 문서를 찾아야 한다.</li>
+<li>GitHub issue, PR, discussion 같은 현재 상태를 읽어야 한다.</li>
+<li>캘린더, 메일, 파일 저장소처럼 계정 권한이 붙은 자료가 필요하다.</li>
+<li>데이터베이스나 내부 API처럼 매번 바뀌는 값을 조회해야 한다.</li>
+<li>단순 조회를 넘어 정해진 tool을 실행해야 한다.</li>
+</ul>
+<p>반대로 아래 상황이면 기다리는 편이 낫다.</p>
+<ul>
+<li>어떤 권한을 주는지 이해하지 못했다.</li>
+<li>server 제공자를 신뢰할 수 없다.</li>
+<li>삭제, 결제, 배포, 권한 변경 같은 되돌리기 어려운 tool이 승인 없이 열린다.</li>
+<li>민감한 고객 데이터나 private 문서가 어디로 가는지 추적할 수 없다.</li>
+</ul>
+<p>처음에는 “읽기 전용 + 공식 server + 승인 필요” 정도가 좋은 출발점이다.</p>
+<h2 id="오늘-가져갈-기준">오늘 가져갈 기준</h2>
+<p>MCP를 한 문장으로 줄이면 이렇다.</p>
+<blockquote>
+<p>MCP는 AI 앱이 외부 도구와 자료를 공통 방식으로 연결하기 위한 표준이다.</p>
+</blockquote>
+<p>하지만 이 한 문장만으로는 부족하다. 실제 작업에서는 다음 기준이 더 중요하다.</p>
+<ul>
+<li>MCP는 모델이 아니다. 외부 context와 tool을 연결하는 통로다.</li>
+<li>MCP는 보안 장치가 아니다. 권한, 승인, 로그, 신뢰할 server가 따로 필요하다.</li>
+<li>MCP는 Skill이나 <code>AGENTS.md</code>를 대체하지 않는다. 반복 기준과 외부 연결은 역할이 다르다.</li>
+<li>MCP server를 붙이면 모델이 볼 수 있는 자료와 할 수 있는 행동이 늘어난다. 그래서 편리함과 위험이 같이 늘어난다.</li>
+<li>초보자는 host, client, server, tool, resource만 먼저 구분하면 된다.</li>
+</ul>
+<p>나는 MCP를 “AI에게 손과 눈을 붙이는 방식”으로만 설명하는 것을 조심한다. 그 비유는 쉽지만, 권한과 책임을 흐릴 수 있다. 더 정확히는 AI 앱이 외부 세상과 말하기 위한 표준 통로다. 통로를 열면 무엇이 들어오고 나가는지 봐야 한다.</p>
+<p>다음에 MCP를 실제로 붙일 일이 생기면, 기능 목록보다 먼저 권한 목록을 보려고 한다. 어떤 tool이 있는지보다, 그 tool이 무엇을 읽고 무엇을 바꿀 수 있는지가 먼저다.</p>
+<p>그 정도로 시작하면 충분하다.</p>
+<h2 id="참고">참고</h2>
+<ul>
+<li>Model Context Protocol, <a href="https://modelcontextprotocol.io/docs/getting-started/intro">Introduction</a></li>
+<li>Model Context Protocol, <a href="https://modelcontextprotocol.io/docs/learn/architecture">Architecture</a></li>
+<li>Model Context Protocol, <a href="https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices">Security Best Practices</a></li>
+<li>OpenAI Developers, <a href="https://developers.openai.com/api/docs/guides/tools-connectors-mcp">MCP and Connectors</a></li>
+<li>OpenAI Developers, <a href="https://developers.openai.com/codex/mcp">Model Context Protocol for Codex</a></li>
+</ul> </div> <section class="dynamic-blog" data-dynamic-blog data-api-base data-post-id="6" data-canonical-path="/writing/6/what-is-mcp/" data-turnstile-site-key hidden aria-labelledby="dynamic-blog-title" data-astro-cid-xt6jigyi> <div class="dynamic-status-row" data-astro-cid-xt6jigyi> <div data-astro-cid-xt6jigyi> <h2 id="dynamic-blog-title" data-astro-cid-xt6jigyi>반응</h2> <p class="dynamic-intro" data-astro-cid-xt6jigyi>댓글은 제출 즉시 공개되며, 작성 때 정한 비밀번호로 삭제할 수 있습니다.</p> </div> <div class="dynamic-meta" aria-label="글 반응 요약" data-astro-cid-xt6jigyi> <span data-comment-count hidden data-astro-cid-xt6jigyi></span> <span data-view-count hidden data-astro-cid-xt6jigyi></span> </div> </div> <p class="dynamic-status" data-dynamic-status role="status" aria-live="polite" data-astro-cid-xt6jigyi>댓글을 불러오는 중입니다.</p> <div class="comment-list" data-comment-list hidden data-astro-cid-xt6jigyi></div> <form class="comment-delete-panel" data-delete-form hidden aria-labelledby="comment-delete-title" data-astro-cid-xt6jigyi> <div class="delete-panel-copy" data-astro-cid-xt6jigyi> <p id="comment-delete-title" class="delete-panel-title" data-delete-label data-astro-cid-xt6jigyi>댓글을 삭제합니다.</p> <p class="delete-panel-note" data-astro-cid-xt6jigyi>댓글 작성 때 입력한 삭제 비밀번호가 필요합니다.</p> </div> <label data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>삭제 비밀번호</span> <input name="deletePassword" type="password" autocomplete="current-password" minlength="4" maxlength="120" required data-astro-cid-xt6jigyi> </label> <div class="delete-panel-footer" data-astro-cid-xt6jigyi> <p data-delete-status role="status" aria-live="polite" data-astro-cid-xt6jigyi></p> <div class="delete-actions" data-astro-cid-xt6jigyi> <button type="submit" data-astro-cid-xt6jigyi>삭제</button> <button type="button" data-cancel-delete data-astro-cid-xt6jigyi>취소</button> </div> </div> </form> <form class="comment-form" data-comment-form data-astro-cid-xt6jigyi> <input type="hidden" name="parentId" data-parent-id data-astro-cid-xt6jigyi> <p class="comment-form-note" data-astro-cid-xt6jigyi>이름과 댓글은 공개됩니다. 삭제 비밀번호는 화면에 보이지 않습니다.</p> <div class="reply-target" data-reply-target hidden data-astro-cid-xt6jigyi> <span data-reply-label role="status" aria-live="polite" data-astro-cid-xt6jigyi></span> <button type="button" data-clear-reply data-astro-cid-xt6jigyi>답글 취소</button> </div> <label class="comment-field" data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>이름</span> <input name="authorName" type="text" autocomplete="name" maxlength="80" required data-astro-cid-xt6jigyi> </label> <label class="comment-field" data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>댓글</span> <textarea name="body" rows="5" minlength="2" maxlength="4000" required aria-describedby="comment-body-help" data-astro-cid-xt6jigyi></textarea> <span id="comment-body-help" class="field-help" data-astro-cid-xt6jigyi>제출하면 승인 대기 없이 바로 공개됩니다.</span> </label> <label class="comment-field" data-astro-cid-xt6jigyi> <span data-astro-cid-xt6jigyi>삭제 비밀번호</span> <input name="deletePassword" type="password" autocomplete="new-password" minlength="4" maxlength="120" required aria-describedby="comment-password-help" data-astro-cid-xt6jigyi> <span id="comment-password-help" class="field-help" data-astro-cid-xt6jigyi>나중에 이 댓글을 직접 삭제할 때만 사용합니다.</span> </label> <div class="turnstile-field" data-astro-cid-xt6jigyi> <span class="turnstile-label" data-astro-cid-xt6jigyi>보안 확인</span> <div class="turnstile-slot" data-turnstile-slot data-astro-cid-xt6jigyi></div> <p class="field-help" data-astro-cid-xt6jigyi>확인이 끝나면 댓글을 제출할 수 있습니다.</p> </div> <div class="form-actions" data-astro-cid-xt6jigyi> <p data-form-status role="status" aria-live="polite" data-astro-cid-xt6jigyi>댓글은 제출 즉시 공개됩니다.</p> <button type="submit" data-astro-cid-xt6jigyi>댓글 남기기</button> </div> </form> </section> <script>
+  const getKstDay = () => {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Seoul',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(new Date());
+    const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+    return `${values.year}-${values.month}-${values.day}`;
+  };
+
+  const joinEndpoint = (base, path) => `${base.replace(/\/$/, '')}${path}`;
+
+  const formatViewCount = (value) => {
+    if (!Number.isFinite(value) || value < 0) return '';
+    return `조회 집계 ${value.toLocaleString('ko-KR')}회`;
+  };
+
+  const countComments = (comments) => {
+    if (!Array.isArray(comments)) return 0;
+    return comments.reduce((total, comment) => total + 1 + countComments(comment.replies), 0);
+  };
+
+  const formatCommentCount = (value) => {
+    if (!Number.isFinite(value) || value < 0) return '';
+    return `댓글 ${value.toLocaleString('ko-KR')}개`;
+  };
+
+  const safeLocalStorage = {
+    get: (key) => {
+      try {
+        return window.localStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    },
+    set: (key, value) => {
+      try {
+        window.localStorage.setItem(key, value);
+      } catch {}
+    },
+  };
+
+  const createElement = (tag, className, text) => {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text) element.textContent = text;
+    return element;
+  };
+
+  const renderComments = (container, comments, depth = 0) => {
+    for (const comment of comments) {
+      const authorName = comment.authorName || '익명';
+      const article = createElement('article', depth > 0 ? 'comment-item comment-item--reply' : 'comment-item');
+      article.style.setProperty('--reply-depth', String(Math.min(depth, 6)));
+      article.dataset.commentId = comment.id;
+      article.setAttribute('aria-label', depth > 0 ? `${authorName}의 답글` : `${authorName}의 댓글`);
+
+      const header = createElement('header', 'comment-header');
+      const createdAt = new Date(comment.createdAt);
+      const time = createElement('time', '', createdAt.toLocaleDateString('ko-KR'));
+      if (!Number.isNaN(createdAt.getTime())) {
+        time.dateTime = createdAt.toISOString();
+        time.title = createdAt.toLocaleString('ko-KR');
+      }
+      header.append(createElement('strong', '', authorName), time);
+
+      const body = createElement('p', 'comment-body', comment.body);
+      const actions = createElement('div', 'comment-actions');
+      const replyButton = createElement('button', 'comment-reply', '답글');
+      replyButton.type = 'button';
+      replyButton.dataset.replyTo = comment.id;
+      replyButton.dataset.replyAuthor = authorName;
+      const deleteButton = createElement('button', 'comment-delete', '삭제');
+      deleteButton.type = 'button';
+      deleteButton.dataset.deleteFor = comment.id;
+      deleteButton.dataset.deleteAuthor = authorName;
+      actions.append(replyButton, deleteButton);
+
+      article.append(header, body, actions);
+
+      container.append(article);
+
+      if (Array.isArray(comment.replies) && comment.replies.length > 0) {
+        renderComments(container, comment.replies, depth + 1);
+      }
+    }
+  };
+
+  const setStatus = (element, text, hidden = false) => {
+    element.textContent = text;
+    element.hidden = hidden;
+  };
+
+  const initTurnstile = (root, siteKey) =>
+    new Promise((resolve) => {
+      if (!siteKey) {
+        resolve({ getToken: () => '', reset: () => {} });
+        return;
+      }
+
+      const slot = root.querySelector('[data-turnstile-slot]');
+      let token = '';
+      const render = () => {
+        if (!window.turnstile || !slot) {
+          resolve({ getToken: () => token, reset: () => {} });
+          return;
+        }
+
+        const widgetId = window.turnstile.render(slot, {
+          sitekey: siteKey,
+          theme: 'auto',
+          size: 'flexible',
+          callback: (value) => {
+            token = value;
+          },
+          'expired-callback': () => {
+            token = '';
+          },
+          'error-callback': () => {
+            token = '';
+          },
+        });
+
+        resolve({
+          getToken: () => token,
+          reset: () => {
+            token = '';
+            window.turnstile?.reset(widgetId);
+          },
+        });
+      };
+
+      if (window.turnstile) {
+        render();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.defer = true;
+      script.addEventListener('load', render, { once: true });
+      script.addEventListener('error', () => resolve({ getToken: () => '', reset: () => {} }), { once: true });
+      document.head.append(script);
+    });
+
+  const initDynamicBlog = async (root) => {
+    const apiBase = root.dataset.apiBase;
+    const postId = Number(root.dataset.postId);
+    const canonicalPath = root.dataset.canonicalPath;
+    const siteKey = root.dataset.turnstileSiteKey;
+
+    if (!apiBase || !Number.isInteger(postId) || !canonicalPath) {
+      root.hidden = true;
+      return;
+    }
+
+    const viewCount = root.querySelector('[data-view-count]');
+    const commentCount = root.querySelector('[data-comment-count]');
+    const status = root.querySelector('[data-dynamic-status]');
+    const list = root.querySelector('[data-comment-list]');
+    const form = root.querySelector('[data-comment-form]');
+    const formStatus = root.querySelector('[data-form-status]');
+    const parentInput = root.querySelector('[data-parent-id]');
+    const replyTarget = root.querySelector('[data-reply-target]');
+    const replyLabel = root.querySelector('[data-reply-label]');
+    const clearReply = root.querySelector('[data-clear-reply]');
+    const deleteForm = root.querySelector('[data-delete-form]');
+    const deletePasswordInput = deleteForm.querySelector('input[name="deletePassword"]');
+    const deleteLabel = root.querySelector('[data-delete-label]');
+    const deleteStatus = root.querySelector('[data-delete-status]');
+    const cancelDelete = root.querySelector('[data-cancel-delete]');
+    const turnstile = await initTurnstile(root, siteKey);
+    let deleteCommentId = '';
+
+    if (!siteKey) {
+      const submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = '제출 비활성화';
+      setStatus(formStatus, '댓글 제출은 Turnstile 설정 후 사용할 수 있습니다.');
+    }
+
+    const refreshPublicData = async () => {
+      const response = await fetch(joinEndpoint(apiBase, `/post-public-data?postId=${postId}`), {
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!response.ok) throw new Error('public data failed');
+
+      const data = await response.json();
+      const comments = Array.isArray(data.comments) ? data.comments : [];
+      const viewLabel = formatViewCount(data.viewCount);
+      const commentLabel = Array.isArray(data.comments) ? formatCommentCount(countComments(comments)) : '';
+      viewCount.textContent = viewLabel;
+      viewCount.hidden = !viewLabel;
+      commentCount.textContent = commentLabel;
+      commentCount.hidden = !commentLabel;
+      list.replaceChildren();
+
+      if (comments.length > 0) {
+        renderComments(list, comments);
+        list.hidden = false;
+        setStatus(status, '', true);
+      } else {
+        list.hidden = true;
+        setStatus(status, '아직 댓글이 없습니다. 첫 댓글은 제출하면 바로 공개됩니다.');
+      }
+    };
+
+    const pageviewKey = `blog-pageview:${postId}:${getKstDay()}`;
+
+    if (!safeLocalStorage.get(pageviewKey)) {
+      fetch(joinEndpoint(apiBase, '/pageview'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          postId,
+          canonicalPath,
+          clientNonce: crypto.randomUUID?.() ?? String(Date.now()),
+        }),
+      })
+        .then(async (response) => {
+          if (!response.ok) return;
+          safeLocalStorage.set(pageviewKey, '1');
+          const data = await response.json();
+          const viewLabel = formatViewCount(data.viewCount);
+          if (viewLabel) {
+            viewCount.textContent = viewLabel;
+            viewCount.hidden = false;
+          }
+        })
+        .catch(() => {});
+    }
+
+    try {
+      await refreshPublicData();
+    } catch {
+      setStatus(status, '반응 영역을 지금 불러오지 못했습니다.');
+    }
+
+    list.addEventListener('click', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target) return;
+
+      const replyButton = target.closest('[data-reply-to]');
+      const deleteButton = target.closest('[data-delete-for]');
+
+      if (replyButton) {
+        parentInput.value = replyButton.dataset.replyTo;
+        replyLabel.textContent = `답글 작성 중: ${replyButton.dataset.replyAuthor}`;
+        replyTarget.hidden = false;
+        form.querySelector('textarea').focus();
+        return;
+      }
+
+      if (!deleteButton) return;
+      deleteCommentId = deleteButton.dataset.deleteFor;
+      deleteLabel.textContent = `${deleteButton.dataset.deleteAuthor}의 댓글을 삭제합니다.`;
+      deletePasswordInput.value = '';
+      deleteStatus.textContent = '삭제 비밀번호를 입력해 주세요.';
+      deleteForm.hidden = false;
+      deletePasswordInput.focus();
+    });
+
+    cancelDelete.addEventListener('click', () => {
+      deleteCommentId = '';
+      deletePasswordInput.value = '';
+      deleteStatus.textContent = '';
+      deleteForm.hidden = true;
+    });
+
+    deleteForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const deletePassword = deletePasswordInput.value.trim();
+
+      if (!deleteCommentId || deletePassword.length < 4) {
+        deleteStatus.textContent = '삭제 비밀번호를 입력해 주세요.';
+        return;
+      }
+
+      const submitButton = deleteForm.querySelector('button[type="submit"]');
+      const submitLabel = submitButton.textContent;
+      submitButton.disabled = true;
+      deleteForm.setAttribute('aria-busy', 'true');
+      submitButton.textContent = '삭제 중...';
+      deleteStatus.textContent = '삭제 중입니다.';
+
+      try {
+        const response = await fetch(joinEndpoint(apiBase, '/comments/delete'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            commentId: deleteCommentId,
+            deletePassword,
+          }),
+        });
+
+        if (!response.ok) {
+          if (response.status === 403) {
+            deleteStatus.textContent = '삭제 비밀번호가 맞지 않습니다.';
+            return;
+          }
+
+          throw new Error('comment delete failed');
+        }
+
+        deleteCommentId = '';
+        deletePasswordInput.value = '';
+        deleteForm.hidden = true;
+        await refreshPublicData();
+        setStatus(status, '댓글을 삭제했습니다.');
+      } catch {
+        deleteStatus.textContent = '댓글을 삭제하지 못했습니다. 잠시 뒤 다시 시도해 주세요.';
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = submitLabel;
+        deleteForm.removeAttribute('aria-busy');
+      }
+    });
+
+    clearReply.addEventListener('click', () => {
+      parentInput.value = '';
+      replyTarget.hidden = true;
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const token = turnstile.getToken();
+
+      if (!token) {
+        setStatus(formStatus, '보안 확인을 마친 뒤 제출할 수 있습니다.');
+        return;
+      }
+
+      const submitButton = form.querySelector('button[type="submit"]');
+      const submitLabel = submitButton.textContent;
+      submitButton.disabled = true;
+      form.setAttribute('aria-busy', 'true');
+      submitButton.textContent = '접수 중...';
+      setStatus(formStatus, '접수 중입니다.');
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(joinEndpoint(apiBase, '/comments'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            postId,
+            authorName: String(formData.get('authorName') ?? ''),
+            body: String(formData.get('body') ?? ''),
+            deletePassword: String(formData.get('deletePassword') ?? ''),
+            parentId: parentInput.value || null,
+            turnstileToken: token,
+          }),
+        });
+
+        if (!response.ok) throw new Error('comment submit failed');
+
+        form.reset();
+        parentInput.value = '';
+        replyTarget.hidden = true;
+        turnstile.reset();
+        await refreshPublicData();
+        setStatus(formStatus, '댓글이 공개됐습니다.');
+      } catch {
+        setStatus(formStatus, '댓글을 접수하지 못했습니다. 잠시 뒤 다시 시도해 주세요.');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = submitLabel;
+        form.removeAttribute('aria-busy');
+      }
+    });
+  };
+
+  for (const root of document.querySelectorAll('[data-dynamic-blog]')) {
+    initDynamicBlog(root);
+  }
+</script> <section class="related-posts" aria-labelledby="related-posts-title" data-astro-cid-gjtny2mx> <div class="related-heading" data-astro-cid-gjtny2mx> <p class="eyebrow" data-astro-cid-gjtny2mx>Related writing</p> <h2 id="related-posts-title" data-astro-cid-gjtny2mx>이어 읽을 글</h2> </div> <div class="related-list" data-astro-cid-gjtny2mx> <a href="/writing/7/agent-hooks-safety-rails/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>에이전트 워크플로</span> <strong data-astro-cid-gjtny2mx>에이전트 훅은 자동화가 아니라 사고방지 장치다</strong> <small data-astro-cid-gjtny2mx>AI agent 작업에서 hook을 어디에 써야 하는지, AGENTS.md나 Skill과 어떻게 나눠야 하는지, 위험 작업을 막는 가드레일로 설계할 때의 기준을 정리한다.</small> </a><a href="/writing/2/karpathy-context-engineering-rules/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>에이전트 워크플로</span> <strong data-astro-cid-gjtny2mx>Karpathy가 말한 컨텍스트 엔지니어링: 규칙 파일 다시 보기</strong> <small data-astro-cid-gjtny2mx>Andrej Karpathy의 Software 2.0, Verifiability, MenuGen 회고를 렌즈로 삼아 AGENTS.md와 CLAUDE.md를 프롬프트 저장소가 아니라 작업 컨텍스트로 보는 기준을 정리한다.</small> </a><a href="/writing/3/what-are-codex-skills/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>에이전트 워크플로</span> <strong data-astro-cid-gjtny2mx>Codex Skill은 무엇인가: AGENTS.md와 어떻게 다를까</strong> <small data-astro-cid-gjtny2mx>Codex Skill을 SKILL.md 중심의 재사용 절차 묶음으로 설명하고, AGENTS.md, 실행 검사(hook), 외부 도구 연결(MCP), 설치 묶음(plugin)과 어떻게 나눠야 하는지 정리한다.</small> </a> </div> </section> <nav class="post-neighbors" aria-label="이전 글과 다음 글" data-astro-cid-gjtny2mx> <a href="/writing/3/what-are-codex-skills/" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>이전 글</span> <strong data-astro-cid-gjtny2mx>Codex Skill은 무엇인가: AGENTS.md와 어떻게 다를까</strong> </a> <a href="/writing/7/agent-hooks-safety-rails/" class="next-link" data-astro-cid-gjtny2mx> <span data-astro-cid-gjtny2mx>다음 글</span> <strong data-astro-cid-gjtny2mx>에이전트 훅은 자동화가 아니라 사고방지 장치다</strong> </a> </nav> </article>  </main> <footer class="site-footer"> <div class="container"> <div> <strong>hangokudao</strong> <span>Codex, Claude Code 등을 사용하며 쌓은 기록과 방법론 이야기</span> </div> <nav aria-label="하단 내비게이션"> <a href="https://github.com/hangokudao" rel="noreferrer" target="_blank">GitHub</a> <a href="/writing/">글</a> <a href="/projects/">프로젝트</a> <a href="/about/">소개</a> </nav> </div> </footer> </div> </body></html>

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc" viewBox="0 0 1200 620">
+  <title id="title">Sub-agent handoff card flow</title>
+  <desc id="desc">Research, Writer, Main Voice Gate, and Judge Self-check cards pass confirmed facts, do not use notes, main decisions, and next checks to Main.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#2f6f67" />
+    </marker>
+    <filter id="shadow" x="-12%" y="-12%" width="124%" height="124%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#1d2925" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <rect width="1200" height="620" fill="#f8f5f1" />
+  <rect x="42" y="42" width="1116" height="536" fill="#fffdf9" stroke="#ded6ce" stroke-width="2" />
+
+  <text x="82" y="112" fill="#1f2d29" font-family="Inter, Arial, sans-serif" font-size="50" font-weight="700">
+    Handoff card contract
+  </text>
+  <text x="82" y="154" fill="#68736f" font-family="Inter, Arial, sans-serif" font-size="24">
+    Each sub-agent returns only what Main needs to trust, reject, or decide.
+  </text>
+
+  <g filter="url(#shadow)">
+    <rect x="80" y="218" width="206" height="206" fill="#ffffff" stroke="#d9d2ca" stroke-width="2" />
+    <rect x="334" y="218" width="206" height="206" fill="#ffffff" stroke="#d9d2ca" stroke-width="2" />
+    <rect x="588" y="218" width="206" height="206" fill="#ffffff" stroke="#d9d2ca" stroke-width="2" />
+    <rect x="842" y="218" width="206" height="206" fill="#ffffff" stroke="#d9d2ca" stroke-width="2" />
+  </g>
+
+  <text x="112" y="270" fill="#1f2d29" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700">Research</text>
+  <text x="112" y="310" fill="#2f6f67" font-family="JetBrains Mono, monospace" font-size="22">confirmed</text>
+  <text x="112" y="342" fill="#8b3f3f" font-family="JetBrains Mono, monospace" font-size="22">do_not_use</text>
+  <text x="112" y="374" fill="#68736f" font-family="JetBrains Mono, monospace" font-size="22">sources</text>
+
+  <text x="366" y="270" fill="#1f2d29" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700">Writer</text>
+  <text x="366" y="310" fill="#2f6f67" font-family="JetBrains Mono, monospace" font-size="22">promise</text>
+  <text x="366" y="342" fill="#8b3f3f" font-family="JetBrains Mono, monospace" font-size="22">avoid</text>
+  <text x="366" y="374" fill="#68736f" font-family="JetBrains Mono, monospace" font-size="22">draft_notes</text>
+
+  <text x="620" y="270" fill="#1f2d29" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700">Main Gate</text>
+  <text x="620" y="310" fill="#2f6f67" font-family="JetBrains Mono, monospace" font-size="22">voice_check</text>
+  <text x="620" y="342" fill="#8b3f3f" font-family="JetBrains Mono, monospace" font-size="22">scope_stop</text>
+  <text x="620" y="374" fill="#68736f" font-family="JetBrains Mono, monospace" font-size="22">main_decision</text>
+
+  <text x="874" y="270" fill="#1f2d29" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700">Judge</text>
+  <text x="874" y="310" fill="#2f6f67" font-family="JetBrains Mono, monospace" font-size="22">fixed</text>
+  <text x="874" y="342" fill="#8b3f3f" font-family="JetBrains Mono, monospace" font-size="22">deferred</text>
+  <text x="874" y="374" fill="#68736f" font-family="JetBrains Mono, monospace" font-size="22">next_check</text>
+
+  <line x1="294" y1="321" x2="326" y2="321" stroke="#2f6f67" stroke-width="3" marker-end="url(#arrow)" />
+  <line x1="548" y1="321" x2="580" y2="321" stroke="#2f6f67" stroke-width="3" marker-end="url(#arrow)" />
+  <line x1="802" y1="321" x2="834" y2="321" stroke="#2f6f67" stroke-width="3" marker-end="url(#arrow)" />
+
+  <rect x="376" y="478" width="448" height="56" fill="#e8f2ef" stroke="#b9d5cc" stroke-width="2" />
+  <text x="600" y="516" text-anchor="middle" fill="#1f2d29" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">
+    Main decides what to trust, reject, and publish.
+  </text>
+
+  <line x1="945" y1="432" x2="824" y2="478" stroke="#2f6f67" stroke-width="3" marker-end="url(#arrow)" />
+</svg>

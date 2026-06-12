@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>hangokudao</title>
+    <description>Codex, Claude Code 등을 사용하며 쌓은 기록과 방법론 이야기</description>
+    <link>https://hangokudao.github.io</link>
+    <item>
+      <title>에이전트 훅은 자동화가 아니라 사고방지 장치다</title>
+      <description>AI agent 작업에서 hook을 어디에 써야 하는지, AGENTS.md나 Skill과 어떻게 나눠야 하는지, 위험 작업을 막는 가드레일로 설계할 때의 기준을 정리한다.</description>
+      <link>https://hangokudao.github.io/writing/7/agent-hooks-safety-rails/</link>
+      <guid>https://hangokudao.github.io/writing/7/agent-hooks-safety-rails/</guid>
+      <pubDate>Thu, 11 Jun 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>MCP는 무엇인가: AI에게 도구를 연결하는 표준</title>
+      <description>MCP를 처음 듣는 사람을 위해 Model Context Protocol이 왜 나왔고, host, client, server, tool, resource를 어떻게 이해하면 되는지 초보자 눈높이로 정리한다.</description>
+      <link>https://hangokudao.github.io/writing/6/what-is-mcp/</link>
+      <guid>https://hangokudao.github.io/writing/6/what-is-mcp/</guid>
+      <pubDate>Wed, 10 Jun 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Codex Skill은 무엇인가: AGENTS.md와 어떻게 다를까</title>
+      <description>Codex Skill을 SKILL.md 중심의 재사용 절차 묶음으로 설명하고, AGENTS.md, 실행 검사(hook), 외부 도구 연결(MCP), 설치 묶음(plugin)과 어떻게 나눠야 하는지 정리한다.</description>
+      <link>https://hangokudao.github.io/writing/3/what-are-codex-skills/</link>
+      <guid>https://hangokudao.github.io/writing/3/what-are-codex-skills/</guid>
+      <pubDate>Thu, 04 Jun 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Karpathy가 말한 컨텍스트 엔지니어링: 규칙 파일 다시 보기</title>
+      <description>Andrej Karpathy의 Software 2.0, Verifiability, MenuGen 회고를 렌즈로 삼아 AGENTS.md와 CLAUDE.md를 프롬프트 저장소가 아니라 작업 컨텍스트로 보는 기준을 정리한다.</description>
+      <link>https://hangokudao.github.io/writing/2/karpathy-context-engineering-rules/</link>
+      <guid>https://hangokudao.github.io/writing/2/karpathy-context-engineering-rules/</guid>
+      <pubDate>Thu, 04 Jun 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>같은 말을 세 번째 붙여넣고 있다면 규칙 파일로 빼야 한다</title>
+      <description>AI 코딩 에이전트에게 같은 금지 조건을 반복해서 붙여넣던 경험을 바탕으로, 프롬프트와 규칙 파일을 나누는 기준을 정리한다.</description>
+      <link>https://hangokudao.github.io/writing/1/repeated-prompts-belong-in-rules/</link>
+      <guid>https://hangokudao.github.io/writing/1/repeated-prompts-belong-in-rules/</guid>
+      <pubDate>Thu, 04 Jun 2026 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

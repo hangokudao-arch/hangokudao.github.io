@@ -1,0 +1,59 @@
+<svg width="1200" height="640" viewBox="0 0 1200 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Decision router for prompt, AGENTS, Skill, hooks, and MCP</title>
+  <desc id="desc">A task routes to prompt, AGENTS.md, Skill, Hook or CI, and MCP or App depending on the work boundary.</desc>
+  <rect width="1200" height="640" fill="#FCF9F8"/>
+  <circle cx="602" cy="320" r="220" fill="#DFF4F1" opacity="0.75"/>
+  <text x="88" y="84" fill="#1C1B1B" font-family="Hanken Grotesk, Noto Sans KR, Arial, sans-serif" font-size="48" font-weight="700">Where should this live?</text>
+  <text x="88" y="126" fill="#3D4947" font-family="Noto Sans KR, Arial, sans-serif" font-size="28">Choose the smallest layer.</text>
+
+  <g transform="translate(492 254)">
+    <rect width="216" height="132" fill="#FFFFFF" stroke="#00685F" stroke-width="4"/>
+    <text x="64" y="64" fill="#005049" font-family="JetBrains Mono, monospace" font-size="40" font-weight="500">Task</text>
+    <text x="38" y="100" fill="#3D4947" font-family="Noto Sans KR, Arial, sans-serif" font-size="24">what changes?</text>
+  </g>
+
+  <g transform="translate(90 246)">
+    <rect width="230" height="118" fill="#FFFFFF" stroke="#BCC9C6" stroke-width="2"/>
+    <text x="26" y="50" fill="#00685F" font-family="JetBrains Mono, monospace" font-size="28" font-weight="500">Prompt</text>
+    <text x="26" y="86" fill="#3D4947" font-family="Noto Sans KR, Arial, sans-serif" font-size="22">one request</text>
+  </g>
+  <path d="M492 320H336" stroke="#00685F" stroke-width="4"/>
+  <path d="M336 320L354 308V332L336 320Z" fill="#00685F"/>
+
+  <g transform="translate(220 472)">
+    <rect width="240" height="118" fill="#FFFFFF" stroke="#BCC9C6" stroke-width="2"/>
+    <text x="26" y="50" fill="#00685F" font-family="JetBrains Mono, monospace" font-size="28" font-weight="500">AGENTS.md</text>
+    <text x="26" y="86" fill="#3D4947" font-family="Noto Sans KR, Arial, sans-serif" font-size="22">repo default</text>
+  </g>
+  <path d="M533 386L449 462" stroke="#00685F" stroke-width="4"/>
+  <path d="M449 462L456 441L472 459L449 462Z" fill="#00685F"/>
+
+  <g transform="translate(480 448)">
+    <rect width="240" height="118" fill="#FFFFFF" stroke="#00685F" stroke-width="3"/>
+    <text x="26" y="50" fill="#005049" font-family="JetBrains Mono, monospace" font-size="28" font-weight="500">Skill</text>
+    <text x="26" y="86" fill="#3D4947" font-family="Noto Sans KR, Arial, sans-serif" font-size="22">workflow</text>
+  </g>
+  <path d="M600 386V432" stroke="#00685F" stroke-width="4"/>
+  <path d="M600 432L588 414H612L600 432Z" fill="#00685F"/>
+
+  <g transform="translate(738 472)">
+    <rect width="240" height="118" fill="#FFFFFF" stroke="#BCC9C6" stroke-width="2"/>
+    <text x="26" y="50" fill="#904D00" font-family="JetBrains Mono, monospace" font-size="28" font-weight="500">Hook / CI</text>
+    <text x="26" y="86" fill="#3D4947" font-family="Noto Sans KR, Arial, sans-serif" font-size="22">hard guardrail</text>
+  </g>
+  <path d="M667 386L752 462" stroke="#904D00" stroke-width="4"/>
+  <path d="M752 462L729 459L745 441L752 462Z" fill="#904D00"/>
+
+  <g transform="translate(882 246)">
+    <rect width="230" height="118" fill="#FFFFFF" stroke="#BCC9C6" stroke-width="2"/>
+    <text x="26" y="50" fill="#904D00" font-family="JetBrains Mono, monospace" font-size="28" font-weight="500">MCP / App</text>
+    <text x="26" y="86" fill="#3D4947" font-family="Noto Sans KR, Arial, sans-serif" font-size="22">live context</text>
+  </g>
+  <path d="M708 320H866" stroke="#904D00" stroke-width="4"/>
+  <path d="M866 320L848 308V332L866 320Z" fill="#904D00"/>
+
+  <g transform="translate(482 162)">
+    <rect width="236" height="56" fill="#FFF3E8" stroke="#904D00" stroke-width="2"/>
+    <text x="25" y="40" fill="#663500" font-family="JetBrains Mono, monospace" font-size="24" font-weight="500">smallest layer</text>
+  </g>
+</svg>
